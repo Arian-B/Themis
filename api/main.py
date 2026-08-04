@@ -20,12 +20,15 @@ Usage:
   uvicorn api.main:app --reload --port 8000
 """
 
-from __future__ import annotations
+import logging
+import os
 
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+logger = logging.getLogger(__name__)
 
 # TODO (Phase 1): Import and include routers
 # from api.routers import contracts, portfolio, negotiate, monitoring
@@ -35,11 +38,23 @@ from fastapi.middleware.cors import CORSMiddleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Startup: verify service connectivity. Shutdown: clean up connection pools."""
+    """Startup: verify service connectivity. Shutdown: flush Langfuse + clean up pools."""
+    # --- Startup ---
+    logger.info(
+        "Themis API starting. Environment: %s",
+        os.getenv("ENVIRONMENT", "development"),
+    )
     # TODO (Phase 1): Check Qdrant, Neo4j, Ollama health endpoints
     # TODO (Phase 1): Pull Ollama models if missing
+
     yield
-    # TODO: Cleanup
+
+    # --- Shutdown ---
+    # Flush pending Langfuse trace events before the process exits.
+    # Without this, buffered events can be lost on SIGTERM.
+    from observability.langfuse_callbacks import flush_langfuse
+    flush_langfuse()
+    logger.info("Langfuse events flushed. Themis API shut down.")
 
 
 def create_app() -> FastAPI:
@@ -63,6 +78,11 @@ def create_app() -> FastAPI:
     # TODO (Phase 4): app.include_router(portfolio.router, prefix="/api/v1")
     # TODO (Phase 4): app.include_router(negotiate.router, prefix="/api/v1")
     # TODO (Phase 4): app.include_router(monitoring.router, prefix="/api/v1")
+
+    @app.get("/health", tags=["ops"], summary="Health check")
+    async def health() -> dict:
+        """Liveness probe for Docker healthcheck and Kubernetes readiness probe."""
+        return {"status": "ok", "version": app.version}
 
     return app
 

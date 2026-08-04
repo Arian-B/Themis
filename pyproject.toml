@@ -54,6 +54,9 @@ dependencies = [
   "httpx>=0.27.0,<0.28",
   "tenacity>=9.0.0,<10.0",             # Retry logic for LLM calls
   "structlog>=24.0.0,<25.0",           # Structured logging
+
+  # Observability (core — tracing is not optional in a legal intelligence system)
+  "langfuse>=3.0.0,<4.0",              # LLM tracing via CallbackHandler; self-hosted
 ]
 
 # ── API extras ────────────────────────────────────────────────────────────────
@@ -68,7 +71,8 @@ api = [
 
 # ── Observability extras ──────────────────────────────────────────────────────
 observability = [
-  "langfuse>=2.38.0,<3.0",
+  # langfuse is in core deps; this extra pulls additional analysis tools
+  "langfuse>=3.0.0,<4.0",              # Already in core; kept here for explicit install
 ]
 
 # ── Evaluation extras ─────────────────────────────────────────────────────────
