@@ -1,0 +1,69 @@
+{
+  "name": "Themis — High-Risk Contract Escalation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "themis-high-risk-escalation",
+        "options": {}
+      },
+      "name": "Webhook: High Risk Alert",
+      "type": "n8n-nodes-base.webhook",
+      "position": [240, 300],
+      "typeVersion": 2,
+      "webhookId": "themis-high-risk-escalation"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.impact_level }}",
+              "operation": "equal",
+              "value2": "critical"
+            }
+          ]
+        }
+      },
+      "name": "Is CRITICAL?",
+      "type": "n8n-nodes-base.if",
+      "position": [460, 300],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "subject": "🚨 CRITICAL: Contract Risk Escalation — Immediate Review Required",
+        "message": "=A CRITICAL risk has been detected in contract: {{ $json.body.contract_id }}\n\nTenant: {{ $json.body.tenant_id }}\nAlert: {{ $json.body.regulation_title || 'High-risk clause detected' }}\nImpact: {{ $json.body.suggested_action }}\n\nREVIEW IMMEDIATELY: {{ $env.THEMIS_FRONTEND_URL }}/contracts/{{ $json.body.contract_id }}",
+        "toEmail": "={{ $env.ESCALATION_EMAIL }}"
+      },
+      "name": "Send Critical Escalation Email",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [680, 200],
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "subject": "⚠️ HIGH Risk Contract Alert",
+        "message": "=A HIGH risk contract event requires your attention.\n\nContract: {{ $json.body.contract_id }}\nDetails: {{ $json.body.suggested_action }}\n\nReview: {{ $env.THEMIS_FRONTEND_URL }}/contracts/{{ $json.body.contract_id }}",
+        "toEmail": "={{ $env.ALERT_EMAIL }}"
+      },
+      "name": "Send High Risk Email",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [680, 400],
+      "typeVersion": 2.1
+    }
+  ],
+  "connections": {
+    "Webhook: High Risk Alert": { "main": [[{ "node": "Is CRITICAL?", "type": "main", "index": 0 }]] },
+    "Is CRITICAL?": {
+      "main": [
+        [{ "node": "Send Critical Escalation Email", "type": "main", "index": 0 }],
+        [{ "node": "Send High Risk Email", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "_meta": {
+    "instanceId": "themis-local",
+    "description": "Receives webhook from Themis Regulatory Monitoring Agent when impact_level >= HIGH. Routes CRITICAL to escalation email, HIGH to standard alert email. Webhook URL: POST http://n8n:5678/webhook/themis-high-risk-escalation"
+  }
+}

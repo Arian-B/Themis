@@ -1,0 +1,65 @@
+{
+  "name": "Themis — Regulatory Alert Weekly Digest",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "weeks", "weeksInterval": 1, "triggerAtDay": [1], "triggerAtHour": 8 }]
+        }
+      },
+      "name": "Weekly Schedule (Monday 08:00)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [240, 300],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.THEMIS_API_URL }}/api/v1/regulatory-alerts?unresolved_only=true",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "name": "Fetch Unresolved Regulatory Alerts",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [460, 300],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.alerts.length }}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "name": "Any Unresolved Alerts?",
+      "type": "n8n-nodes-base.if",
+      "position": [680, 300],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "subject": "📋 Themis Weekly Regulatory Digest",
+        "message": "=Weekly regulatory monitoring summary:\n\n{{ $json.alerts.map(a => `[${a.impact_level.toUpperCase()}] ${a.regulation_title}\\n  Contract: ${a.contract_id}\\n  Action: ${a.suggested_action}\\n`).join('\\n') }}\n\nTotal alerts: {{ $json.alerts.length }}\nReview and resolve: {{ $env.THEMIS_FRONTEND_URL }}/regulatory-alerts",
+        "toEmail": "={{ $env.ALERT_EMAIL }}"
+      },
+      "name": "Send Digest Email",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [900, 240],
+      "typeVersion": 2.1
+    }
+  ],
+  "connections": {
+    "Weekly Schedule (Monday 08:00)": { "main": [[{ "node": "Fetch Unresolved Regulatory Alerts", "type": "main", "index": 0 }]] },
+    "Fetch Unresolved Regulatory Alerts": { "main": [[{ "node": "Any Unresolved Alerts?", "type": "main", "index": 0 }]] },
+    "Any Unresolved Alerts?": { "main": [[{ "node": "Send Digest Email", "type": "main", "index": 0 }], []] }
+  },
+  "_meta": {
+    "instanceId": "themis-local",
+    "description": "Every Monday at 08:00, fetches unresolved regulatory alerts from Themis API and sends a formatted digest email. Only sends if there are unresolved alerts."
+  }
+}

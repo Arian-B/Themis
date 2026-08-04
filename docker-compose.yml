@@ -1,0 +1,250 @@
+# =============================================================================
+# Themis — Local Development Docker Compose
+# =============================================================================
+# Services:
+#   qdrant          Vector store (contract + corpus embeddings)
+#   neo4j           Knowledge graph (entities, relationships, portfolio)
+#   ollama          Local LLM inference (classification, extraction)
+#   langfuse-db     PostgreSQL backing store for Langfuse
+#   langfuse        Observability / tracing UI
+#   n8n             Workflow automation (deadline reminders, alerts)
+#   api             Themis FastAPI service
+#
+# Usage:
+#   cp .env.example .env      # Fill in secrets
+#   docker compose up -d      # Start all services
+#   docker compose logs -f api # Tail FastAPI logs
+#
+# Data persistence: all service data is mounted to ./data/docker/ (gitignored).
+# Pull Ollama models after first start:
+#   docker compose exec ollama ollama pull llama3.1:8b
+#   docker compose exec ollama ollama pull nomic-embed-text
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # Qdrant — Vector store
+  # Collections created lazily by retrieval/vector_store.py on first write.
+  # UI: http://localhost:6333/dashboard
+  # ---------------------------------------------------------------------------
+  qdrant:
+    image: qdrant/qdrant:v1.9.0
+    container_name: themis-qdrant
+    ports:
+      - "6333:6333"   # REST API + UI
+      - "6334:6334"   # gRPC
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      QDRANT__LOG_LEVEL: INFO
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:6333/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - themis-net
+
+  # ---------------------------------------------------------------------------
+  # Neo4j — Knowledge graph
+  # UI / Browser: http://localhost:7474  (user: neo4j, pass: from .env)
+  # Bolt: bolt://localhost:7687
+  # Plugin: APOC (required for merge procedures and graph algorithms)
+  # ---------------------------------------------------------------------------
+  neo4j:
+    image: neo4j:5.19-community
+    container_name: themis-neo4j
+    ports:
+      - "7474:7474"   # HTTP / Browser UI
+      - "7687:7687"   # Bolt
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_plugins:/plugins
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD}
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_apoc_export_file_enabled: "true"
+      NEO4J_apoc_import_file_enabled: "true"
+      NEO4J_dbms_security_procedures_unrestricted: apoc.*
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:7474 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    networks:
+      - themis-net
+
+  # ---------------------------------------------------------------------------
+  # Ollama — Local LLM inference
+  # Models are pulled on first use via `docker compose exec ollama ollama pull ...`
+  # REST API: http://localhost:11434
+  # Models directory is persisted so re-downloads are avoided across restarts.
+  # GPU: uncomment `deploy` section below if you have an NVIDIA GPU.
+  # ---------------------------------------------------------------------------
+  ollama:
+    image: ollama/ollama:latest
+    container_name: themis-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks:
+      - themis-net
+
+  # ---------------------------------------------------------------------------
+  # Langfuse PostgreSQL — backing database for Langfuse traces
+  # Separate from application PostgreSQL to keep concerns isolated.
+  # ---------------------------------------------------------------------------
+  langfuse-db:
+    image: postgres:16-alpine
+    container_name: themis-langfuse-db
+    environment:
+      POSTGRES_USER: langfuse
+      POSTGRES_PASSWORD: ${LANGFUSE_DB_PASSWORD}
+      POSTGRES_DB: langfuse
+    volumes:
+      - langfuse_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U langfuse"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - themis-net
+
+  # ---------------------------------------------------------------------------
+  # Langfuse — Self-hosted observability / LLM tracing
+  # UI: http://localhost:3000
+  # Create project + get API keys from UI on first start.
+  # ---------------------------------------------------------------------------
+  langfuse:
+    image: langfuse/langfuse:2
+    container_name: themis-langfuse
+    ports:
+      - "3000:3000"
+    depends_on:
+      langfuse-db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://langfuse:${LANGFUSE_DB_PASSWORD}@langfuse-db:5432/langfuse
+      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET}
+      NEXTAUTH_URL: http://localhost:3000
+      SALT: ${LANGFUSE_SALT}
+      TELEMETRY_ENABLED: "false"
+      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: "false"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/public/health || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+    networks:
+      - themis-net
+
+  # ---------------------------------------------------------------------------
+  # n8n — Workflow automation
+  # UI: http://localhost:5678
+  # Import workflows from automation/n8n_workflows/ via UI or CLI.
+  # ---------------------------------------------------------------------------
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: themis-n8n
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./automation/n8n_workflows:/home/node/workflows:ro
+    environment:
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: ${N8N_USER}
+      N8N_BASIC_AUTH_PASSWORD: ${N8N_PASSWORD}
+      WEBHOOK_URL: http://localhost:5678
+      GENERIC_TIMEZONE: UTC
+      N8N_SECURE_COOKIE: "false"
+    networks:
+      - themis-net
+
+  # ---------------------------------------------------------------------------
+  # Themis API — FastAPI service
+  # Rebuilt on file changes in dev via bind mount + uvicorn --reload.
+  # Depends on all infrastructure services being healthy before starting.
+  # Hot-reload: uvicorn watches the bind-mounted source directory.
+  # ---------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+      target: development
+    container_name: themis-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app   # bind mount for hot reload
+    environment:
+      # Service URLs (internal Docker network)
+      QDRANT_URL: http://qdrant:6333
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      OLLAMA_URL: http://ollama:11434
+      LANGFUSE_HOST: http://langfuse:3000
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      # LLM config
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      EMBEDDING_PROVIDER: ollama
+      OLLAMA_EMBED_MODEL: nomic-embed-text
+      OLLAMA_CLASSIFY_MODEL: llama3.1:8b
+      # Auth
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_ALGORITHM: HS256
+      # App
+      ENVIRONMENT: development
+      LOG_LEVEL: DEBUG
+    depends_on:
+      qdrant:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - themis-net
+
+# =============================================================================
+# Volumes — all data persisted across docker compose down (not down -v)
+# =============================================================================
+volumes:
+  qdrant_data:
+  neo4j_data:
+  neo4j_logs:
+  neo4j_plugins:
+  ollama_models:
+  langfuse_db_data:
+  n8n_data:
+
+# =============================================================================
+# Networks — all services communicate over an isolated bridge network
+# =============================================================================
+networks:
+  themis-net:
+    driver: bridge

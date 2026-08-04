@@ -1,0 +1,142 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "themis"
+version = "0.1.0"
+description = "Multi-agent legal & compliance intelligence platform for SMBs"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+
+# ── Core runtime dependencies ─────────────────────────────────────────────────
+# Pinned to minor versions; update intentionally (breaking changes in LangGraph
+# and LangChain are frequent — never use unpinned deps in an agentic system).
+dependencies = [
+  # Orchestration
+  "langgraph>=0.2.0,<0.3",
+  "langchain>=0.3.0,<0.4",
+  "langchain-core>=0.3.0,<0.4",
+  "langchain-community>=0.3.0,<0.4",
+
+  # LLM providers
+  "langchain-anthropic>=0.2.0,<0.3",   # Claude (risk analysis, negotiation)
+  "langchain-ollama>=0.2.0,<0.3",       # Ollama (classification, extraction)
+  "anthropic>=0.36.0,<0.37",
+
+  # Vector store
+  "langchain-qdrant>=0.1.0,<0.2",
+  "qdrant-client>=1.9.0,<2.0",
+
+  # Graph store
+  "langchain-neo4j>=0.1.0,<0.2",
+  "neo4j>=5.19.0,<6.0",
+
+  # Structured output / schemas
+  "pydantic>=2.8.0,<3.0",
+  "pydantic-ai>=0.0.13,<0.1",          # Structured LLM output enforcement
+
+  # MCP tool layer
+  "mcp>=1.0.0,<2.0",                    # Model Context Protocol Python SDK
+
+  # PDF processing
+  "pdfplumber>=0.11.0,<0.12",
+
+  # PII redaction
+  "presidio-analyzer>=2.2.0,<3.0",
+  "presidio-anonymizer>=2.2.0,<3.0",
+  "spacy>=3.7.0,<4.0",                  # Presidio NLP backend
+  # After install: python -m spacy download en_core_web_lg
+
+  # Utilities
+  "python-dotenv>=1.0.0,<2.0",
+  "httpx>=0.27.0,<0.28",
+  "tenacity>=9.0.0,<10.0",             # Retry logic for LLM calls
+  "structlog>=24.0.0,<25.0",           # Structured logging
+]
+
+# ── API extras ────────────────────────────────────────────────────────────────
+[project.optional-dependencies]
+api = [
+  "fastapi>=0.115.0,<0.116",
+  "uvicorn[standard]>=0.30.0,<0.31",
+  "gunicorn>=23.0.0,<24.0",
+  "python-jose[cryptography]>=3.3.0,<4.0",  # JWT
+  "python-multipart>=0.0.9,<0.1",            # File upload
+]
+
+# ── Observability extras ──────────────────────────────────────────────────────
+observability = [
+  "langfuse>=2.38.0,<3.0",
+]
+
+# ── Evaluation extras ─────────────────────────────────────────────────────────
+eval = [
+  "ragas>=0.1.0,<0.2",
+  "datasets>=3.0.0,<4.0",
+]
+
+# ── Development extras ────────────────────────────────────────────────────────
+dev = [
+  # Testing
+  "pytest>=8.0.0,<9.0",
+  "pytest-asyncio>=0.24.0,<0.25",
+  "pytest-cov>=5.0.0,<6.0",
+  "httpx>=0.27.0,<0.28",               # FastAPI TestClient (async)
+
+  # Linting / formatting
+  "ruff>=0.6.0,<0.7",
+  "mypy>=1.11.0,<2.0",
+
+  # Security
+  "bandit>=1.7.0,<2.0",
+
+  # Type stubs
+  "types-python-jose>=3.3.0,<4.0",
+]
+
+# ── Ruff configuration ────────────────────────────────────────────────────────
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+  "E",    # pycodestyle errors
+  "W",    # pycodestyle warnings
+  "F",    # pyflakes
+  "I",    # isort
+  "B",    # flake8-bugbear
+  "UP",   # pyupgrade
+  "ANN",  # flake8-annotations (enforce type hints)
+  "S",    # bandit (security)
+]
+ignore = [
+  "ANN101",  # self annotation not required
+  "ANN102",  # cls annotation not required
+  "S101",    # assert allowed in tests
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN", "S"]
+
+# ── Mypy configuration ────────────────────────────────────────────────────────
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+exclude = ["tests/", "eval/"]
+
+# ── Pytest configuration ──────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "--cov=. --cov-report=term-missing --cov-report=xml"
+filterwarnings = [
+  "ignore::DeprecationWarning",
+]
+
+# ── Coverage ──────────────────────────────────────────────────────────────────
+[tool.coverage.run]
+omit = ["tests/*", "eval/*", "infra/*", "frontend/*"]

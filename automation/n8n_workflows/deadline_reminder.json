@@ -1,0 +1,65 @@
+{
+  "name": "Themis — Deadline Reminder",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 24 }]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [240, 300],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.THEMIS_API_URL }}/api/v1/portfolio/obligations?days_ahead=30",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "name": "Fetch Obligations Due in 30 Days",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [460, 300],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.obligations.length }}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "name": "Has Upcoming Obligations?",
+      "type": "n8n-nodes-base.if",
+      "position": [680, 300],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "subject": "⚠️ Themis: Contract Obligations Due in 30 Days",
+        "message": "=The following contract obligations are due within 30 days:\n\n{{ $json.obligations.map(o => `• ${o.description} (${o.contract_title}) — Due: ${o.due_date}`).join('\\n') }}\n\nLog in to Themis to review: {{ $env.THEMIS_FRONTEND_URL }}",
+        "toEmail": "={{ $env.ALERT_EMAIL }}"
+      },
+      "name": "Send Deadline Email",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [900, 240],
+      "typeVersion": 2.1
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": { "main": [[{ "node": "Fetch Obligations Due in 30 Days", "type": "main", "index": 0 }]] },
+    "Fetch Obligations Due in 30 Days": { "main": [[{ "node": "Has Upcoming Obligations?", "type": "main", "index": 0 }]] },
+    "Has Upcoming Obligations?": { "main": [[{ "node": "Send Deadline Email", "type": "main", "index": 0 }], []] }
+  },
+  "_meta": {
+    "instanceId": "themis-local",
+    "description": "Polls Themis API daily for obligations due in 30 days and sends email reminders. Configure THEMIS_API_URL, ALERT_EMAIL, THEMIS_FRONTEND_URL in n8n environment variables."
+  }
+}
