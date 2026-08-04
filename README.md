@@ -90,7 +90,7 @@ Every agent boundary enforces a validated schema rather than passing free text d
 ### Prerequisites
 
 - Docker Desktop
-- Python 3.11+
+- Python 3.12+
 - An Anthropic API key
 
 ### Local setup
@@ -147,7 +147,7 @@ themis/
 └── tests/           Unit and integration tests
 ```
 
-Full component-level detail is maintained in [`implementation_plan.md`](implementation_plan.md).
+Full component-level detail — phases, dependencies, design decisions, and open questions — is maintained in the project wiki.
 
 ---
 
