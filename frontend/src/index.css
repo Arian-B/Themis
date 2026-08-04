@@ -1,0 +1,166 @@
+/* =============================================================================
+   Themis — Global CSS
+   Design system tokens and base styles.
+   Component-specific styles live alongside their .tsx files (CSS Modules).
+   ============================================================================= */
+
+/* ── Google Fonts ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Design tokens ────────────────────────────────────────────────────────── */
+:root {
+  /* Colour palette — dark mode by default */
+  --color-bg-base:        #0a0f1e;
+  --color-bg-surface:     #111827;
+  --color-bg-elevated:    #1a2235;
+  --color-bg-overlay:     rgba(17, 24, 39, 0.95);
+
+  /* Brand */
+  --color-brand-primary:  #7c3aed;   /* violet-700 */
+  --color-brand-light:    #a78bfa;   /* violet-400 */
+  --color-brand-glow:     rgba(124, 58, 237, 0.3);
+
+  /* Risk level colours — used across heatmap + flags */
+  --color-risk-critical:  #ef4444;   /* red-500 */
+  --color-risk-high:      #f97316;   /* orange-500 */
+  --color-risk-medium:    #eab308;   /* yellow-500 */
+  --color-risk-low:       #22c55e;   /* green-500 */
+  --color-risk-none:      #374151;   /* gray-700 */
+
+  /* Typography */
+  --color-text-primary:   #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted:     #475569;
+
+  /* Borders */
+  --color-border:         rgba(255, 255, 255, 0.08);
+  --color-border-hover:   rgba(124, 58, 237, 0.4);
+
+  /* Spacing scale */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Border radius */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px var(--color-brand-glow);
+
+  /* Transitions */
+  --transition-fast:   150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow:   400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── Reset ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Typography ───────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+
+code, pre {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+/* ── Scrollbar styling ────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg-surface); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-brand-primary); }
+
+/* ── Focus styles (accessibility) ─────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Risk level utility classes ───────────────────────────────────────────── */
+.risk-critical { color: var(--color-risk-critical); }
+.risk-high     { color: var(--color-risk-high); }
+.risk-medium   { color: var(--color-risk-medium); }
+.risk-low      { color: var(--color-risk-low); }
+
+.risk-bg-critical { background-color: rgba(239, 68, 68, 0.15); }
+.risk-bg-high     { background-color: rgba(249, 115, 22, 0.15); }
+.risk-bg-medium   { background-color: rgba(234, 179, 8, 0.15); }
+.risk-bg-low      { background-color: rgba(34, 197, 94, 0.15); }
+
+/* ── Glassmorphism card utility ───────────────────────────────────────────── */
+.glass-card {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* ── Animations ───────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--color-brand-glow); }
+  50%       { box-shadow: 0 0 20px 4px var(--color-brand-glow); }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-normal) forwards;
+}

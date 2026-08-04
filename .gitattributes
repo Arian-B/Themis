@@ -1,0 +1,38 @@
+# Themis — Git line ending configuration
+# Enforces LF line endings in the repo regardless of OS.
+# Prevents spurious diffs between Windows (CRLF) and Linux/Mac (LF) developers.
+
+* text=auto eol=lf
+
+# Force binary treatment for assets that should never be line-ending-converted
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.svg  binary
+*.pdf  binary
+*.zip  binary
+*.whl  binary
+
+# JSON files — LF always (n8n workflows, package.json)
+*.json text eol=lf
+
+# YAML / TOML — LF always
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+
+# Python — LF always
+*.py   text eol=lf
+
+# TypeScript / JavaScript — LF always
+*.ts   text eol=lf
+*.tsx  text eol=lf
+*.js   text eol=lf
+*.jsx  text eol=lf
+*.css  text eol=lf
+*.md   text eol=lf
+
+# Terraform
+*.tf   text eol=lf
