@@ -59,12 +59,19 @@ def _get_client() -> "qdrant_client.QdrantClient":
     url = os.environ.get("QDRANT_URL")
     api_key = os.environ.get("QDRANT_API_KEY")
 
-    if not url:
+    if not url or not api_key:
+        missing = []
+        if not url:
+            missing.append("QDRANT_URL")
+        if not api_key:
+            missing.append("QDRANT_API_KEY")
         raise EnvironmentError(
-            "QDRANT_URL not set. Add it to your .env file."
+            f"Qdrant Cloud credentials missing: {', '.join(missing)}. "
+            "Qdrant Cloud is used exclusively — set QDRANT_URL and QDRANT_API_KEY in your .env file."
         )
 
     return QdrantClient(url=url, api_key=api_key, timeout=60)
+
 
 
 def collection_name_for_jurisdiction(jurisdiction: str) -> str:

@@ -3,10 +3,10 @@
 # =============================================================================
 # Services managed by Compose:
 #   neo4j           Knowledge graph (entities, relationships, portfolio memory)
-#   qdrant          Local Vector store (optional fallback if Qdrant Cloud not used)
 #   api             Themis FastAPI backend service
 #
 # Standalone / External services (NOT managed by this compose file):
+#   Qdrant          Using Qdrant Cloud exclusively (QDRANT_URL & QDRANT_API_KEY in .env)
 #   Ollama          Managed separately as standalone container `themis-ollama`
 #                   or host process at http://localhost:11434
 #   Langfuse        Using Langfuse Cloud (https://cloud.langfuse.com)
@@ -14,7 +14,7 @@
 #   Supabase        Using cloud instance (https://*.supabase.co)
 #
 # Usage:
-#   docker compose up -d           # Start local services (Neo4j, Qdrant, API)
+#   docker compose up -d           # Start local services (Neo4j, API)
 #   docker compose logs -f api     # Tail FastAPI logs
 # =============================================================================
 
@@ -47,29 +47,6 @@ services:
       interval: 15s
       timeout: 10s
       retries: 10
-    networks:
-      - themis-net
-
-  # ---------------------------------------------------------------------------
-  # Qdrant — Local Vector Store (optional dev fallback)
-  # Production / primary uses Qdrant Cloud specified via QDRANT_URL in .env.
-  # UI: http://localhost:6333/dashboard
-  # ---------------------------------------------------------------------------
-  qdrant:
-    image: qdrant/qdrant:v1.9.0
-    container_name: themis-qdrant
-    ports:
-      - "6333:6333"   # REST API + UI
-      - "6334:6334"   # gRPC
-    volumes:
-      - qdrant_data:/qdrant/storage
-    environment:
-      QDRANT__LOG_LEVEL: INFO
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:6333/healthz || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     networks:
       - themis-net
 
@@ -138,7 +115,6 @@ volumes:
   neo4j_data:
   neo4j_logs:
   neo4j_plugins:
-  qdrant_data:
 
 # =============================================================================
 # Networks — isolated bridge network
