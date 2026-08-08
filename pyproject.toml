@@ -26,10 +26,12 @@ dependencies = [
   "langchain>=0.3.0,<0.4",
   "langchain-core>=0.3.0,<0.4",
   "langchain-community>=0.3.0,<0.4",
+  "langchain-text-splitters>=0.3.0,<0.4", # Text chunking
 
   # LLM providers
   "langchain-anthropic>=0.2.0,<0.3",   # Claude (risk analysis, negotiation)
   "langchain-ollama>=0.2.0,<0.3",       # Ollama (classification, extraction)
+  "langchain-openai>=0.2.0,<0.3",       # OpenAI / Kimi API compatible
   "anthropic>=0.36.0,<0.37",
 
   # Vector store
@@ -43,6 +45,7 @@ dependencies = [
   # Structured output / schemas
   "pydantic>=2.8.0,<3.0",
   "pydantic-ai>=0.0.13,<0.1",          # Structured LLM output enforcement
+  "typing-extensions>=4.10.0,<5.0",
 
   # MCP tool layer
   "mcp>=1.0.0,<2.0",                    # Model Context Protocol Python SDK
@@ -58,7 +61,7 @@ dependencies = [
 
   # Utilities
   "python-dotenv>=1.0.0,<2.0",
-  "httpx>=0.27.0,<0.28",
+  "httpx>=0.27.0,<1.0",
   "tenacity>=9.0.0,<10.0",             # Retry logic for LLM calls
   "structlog>=24.0.0,<25.0",           # Structured logging
 
@@ -94,6 +97,7 @@ pipeline = [
   # Ingestion
   "dlt[filesystem]>=1.4.0,<2.0",          # Data load tool — corpus source → raw files
   "requests>=2.32.0,<3.0",                 # HTTP for statute/EDGAR fetching
+  "pandas>=2.0.0,<3.0",                    # DataFrames for GX validation & corpus manipulation
 
   # Data quality
   "great-expectations>=0.18.0,<0.19",     # Corpus validation suite
@@ -111,6 +115,7 @@ pipeline = [
   # install with: pip install psycopg2-binary --only-binary psycopg2-binary
   "psycopg[binary]>=3.1.0,<4.0",          # Modern asyncpg-compatible Postgres driver
 ]
+
 
 # ── Development extras ────────────────────────────────────────────────────────
 dev = [

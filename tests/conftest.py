@@ -92,4 +92,4 @@ def minimal_pdf_bytes() -> bytes:
     TODO (Phase 1): Implement using reportlab or fpdf2.
     """
     # Placeholder: real implementation creates a proper PDF in memory
-    return b"%PDF-1.4 minimal test fixture — implement in Phase 1"
+    return b"%PDF-1.4 minimal test fixture -- implement in Phase 1"
