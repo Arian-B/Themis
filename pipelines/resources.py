@@ -42,18 +42,32 @@ class OllamaConfig(ConfigurableResource):
     host: str = EnvVar("OLLAMA_HOST")
     embed_model: str = EnvVar("OLLAMA_EMBED_MODEL")
 
-    def check_health(self) -> bool:
-        """Return True if Ollama is reachable and the embed model is available."""
+    def fetch_available_models(self) -> list[str]:
+        """Fetch list of model names from Ollama /api/tags endpoint."""
         import httpx
 
+        with httpx.Client(timeout=10.0) as client:
+            resp = client.get(f"{self.host}/api/tags")
+            resp.raise_for_status()
+            return [m["name"] for m in resp.json().get("models", [])]
+
+    def check_health(self) -> tuple[bool, list[str]]:
+        """
+        Return (is_healthy, available_models).
+        is_healthy is True if Ollama is reachable and embed_model is available
+        (matching base model name regardless of tag suffix).
+        """
         try:
-            with httpx.Client(timeout=10.0) as client:
-                resp = client.get(f"{self.host}/api/tags")
-                resp.raise_for_status()
-                models = [m["name"] for m in resp.json().get("models", [])]
-                return self.embed_model in models
+            models = self.fetch_available_models()
+            target_base = self.embed_model.split(":")[0]
+            is_available = any(
+                m == self.embed_model or m.split(":")[0] == target_base
+                for m in models
+            )
+            return is_available, models
         except Exception:
-            return False
+            return False, []
+
 
 
 class PipelineConfig(ConfigurableResource):

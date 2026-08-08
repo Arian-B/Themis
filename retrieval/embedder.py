@@ -200,11 +200,19 @@ def check_ollama_health() -> bool:
             resp = client.get(f"{host}/api/tags")
             resp.raise_for_status()
             models = [m["name"] for m in resp.json().get("models", [])]
-            if model not in models:
+            target_base = model.split(":")[0]
+            is_available = any(
+                m == model or m.split(":")[0] == target_base
+                for m in models
+            )
+            if not is_available:
                 logger.warning(
-                    "Ollama is running but model '%s' not found. "
-                    "Pull it: docker compose exec ollama ollama pull %s",
+                    "Ollama is running at %s but model '%s' was not found. "
+                    "Models reported by Ollama /api/tags: %s. "
+                    "Pull it: docker exec -it themis-ollama ollama pull %s",
+                    host,
                     model,
+                    models,
                     model,
                 )
                 return False
@@ -212,3 +220,4 @@ def check_ollama_health() -> bool:
     except Exception as exc:
         logger.warning("Ollama health check failed: %s", exc)
         return False
+

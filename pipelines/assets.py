@@ -164,13 +164,16 @@ def chunk_and_embed_corpus(
         context.log.warning("DRY RUN: skipping actual embedding. Returning empty chunks.")
         return {}
 
-    if not ollama.check_health():
+    is_healthy, available_models = ollama.check_health()
+    if not is_healthy:
+        models_str = ", ".join(f"'{m}'" for m in available_models) if available_models else "None (could not connect or empty response)"
         raise RuntimeError(
-            f"Ollama is not reachable at {ollama.host} or model '{ollama.embed_model}' "
-            "is not available.\n"
-            "  docker compose up ollama -d\n"
-            "  docker compose exec ollama ollama pull nomic-embed-text"
+            f"Ollama health check failed for model '{ollama.embed_model}' at {ollama.host}.\n"
+            f"Models reported by Ollama /api/tags: [{models_str}]\n"
+            "To pull the required embedding model:\n"
+            "  docker exec -it themis-ollama ollama pull nomic-embed-text"
         )
+
 
     context.log.info("Chunking %d documents...", len(validate_corpus))
     all_chunks = chunk_documents(validate_corpus)
