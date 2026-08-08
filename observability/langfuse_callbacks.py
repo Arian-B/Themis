@@ -180,7 +180,7 @@ def _get_langfuse_client() -> "Langfuse":
     return Langfuse(
         public_key=os.environ["LANGFUSE_PUBLIC_KEY"],
         secret_key=os.environ["LANGFUSE_SECRET_KEY"],
-        host=os.getenv("LANGFUSE_HOST", "http://langfuse:3000"),
+        host=os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com"),
     )
 
 

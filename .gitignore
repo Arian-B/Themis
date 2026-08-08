@@ -1,6 +1,24 @@
 .env
+.env.local
+
+# Data pipeline runtime dirs
+data/raw/
 data/docker/
 data/corpora/
+data/dlt_state/
+
+# Dagster runtime
+dagster_home/
+.dagster/
+
+# Great Expectations uncommitted/runtime
+great_expectations/uncommitted/
+.great_expectations/
+
+# dlt pipeline state
+.dlt/
+
+# Misc
 eval/datasets/
 __pycache__/
 *.pyc

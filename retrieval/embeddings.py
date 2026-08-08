@@ -1,42 +1,58 @@
 """
-retrieval/embeddings.py — Embedding model abstraction.
+retrieval/embeddings.py — LangChain Embeddings abstraction for agent use.
 
-All embedding operations go through this module. Switching between local
-(Ollama nomic-embed-text) and hosted (OpenAI text-embedding-3-small) requires
-only changing the EMBEDDING_PROVIDER env var — no code changes.
+All embedding operations that go through LangChain (agent RAG queries, similarity
+searches via LangChain's vector store interface) use this module.
 
-Embedding model choices:
-  - "ollama"  → nomic-embed-text (768-dim, runs locally, free, good for legal text)
-  - "openai"  → text-embedding-3-small (1536-dim, hosted, higher quality)
-  Default: "ollama" for local dev; "openai" for production.
+For the data ingestion pipeline (chunking + upserting), see retrieval/embedder.py
+which uses direct HTTP to Ollama and does NOT depend on LangChain.
 
-Usage:
-    embeddings = get_embeddings()  # reads EMBEDDING_PROVIDER from env
-    vector = await embeddings.aembed_query("limitation of liability cap")
+Embedding model choices (set EMBEDDING_PROVIDER in .env):
+  "ollama"  → nomic-embed-text via langchain-ollama (768-dim, local, free)
+  "openai"  → text-embedding-3-small via langchain-openai (1536-dim, hosted)
+
+Default: "ollama"
+
+Usage (in agent retrieval / MCP retrieval server):
+    from retrieval.embeddings import get_embeddings
+    embeddings = get_embeddings()
+    vector = await embeddings.aembed_query("limitation of liability clause")
 """
 
 from __future__ import annotations
 
 import os
+
 from langchain_core.embeddings import Embeddings
 
 
 def get_embeddings() -> Embeddings:
     """
-    Factory: returns the configured LangChain embeddings implementation.
+    Return the configured LangChain Embeddings implementation.
     Reads EMBEDDING_PROVIDER from environment (default: "ollama").
+
+    Raises:
+        ValueError: For unknown EMBEDDING_PROVIDER value.
+        ImportError: If the required provider package is not installed.
     """
     provider = os.getenv("EMBEDDING_PROVIDER", "ollama")
 
     if provider == "ollama":
-        # TODO (Phase 2): from langchain_ollama import OllamaEmbeddings
-        # return OllamaEmbeddings(model="nomic-embed-text", base_url=os.getenv("OLLAMA_URL"))
-        raise NotImplementedError("Phase 2: Ollama embeddings not yet configured")
+        from langchain_ollama import OllamaEmbeddings  # type: ignore[import]
+        return OllamaEmbeddings(
+            model=os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text"),
+            base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+        )
 
     elif provider == "openai":
-        # TODO (Phase 2): from langchain_openai import OpenAIEmbeddings
-        # return OpenAIEmbeddings(model="text-embedding-3-small")
-        raise NotImplementedError("Phase 2: OpenAI embeddings not yet configured")
+        from langchain_openai import OpenAIEmbeddings  # type: ignore[import]
+        return OpenAIEmbeddings(
+            model="text-embedding-3-small",
+            # OPENAI_API_KEY read automatically from environment
+        )
 
     else:
-        raise ValueError(f"Unknown EMBEDDING_PROVIDER: {provider!r}. Use 'ollama' or 'openai'.")
+        raise ValueError(
+            f"Unknown EMBEDDING_PROVIDER: {provider!r}. "
+            "Valid options: 'ollama', 'openai'. Check your .env file."
+        )
