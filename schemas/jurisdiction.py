@@ -1,51 +1,59 @@
 """
 schemas/jurisdiction.py — PydanticAI schemas for jurisdiction classification.
 
-Every agent boundary in Themis uses PydanticAI models, not free-text dicts.
+Every agent boundary in Themis uses Pydantic models, not free-text dicts.
 This ensures: (1) schema validation at the LLM output boundary, (2) type-safe
 state reads in downstream agents, (3) automatic JSON serialisation via .model_dump().
 
-JurisdictionResult is the output contract for Agent 1 (JurisdictionClassifierAgent).
+JurisdictionClassification is the output contract for Agent 1 (jurisdiction_classifier).
+JurisdictionResult is the legacy alias kept for backward compatibility.
 """
 
 from __future__ import annotations
 
-from enum import Enum
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
 
-class Jurisdiction(str, Enum):
-    """Supported jurisdictions. Pluggable: add new values + a corpus collection."""
-    US_GENERIC = "us_generic"
-    UK = "uk"
-    UNKNOWN = "unknown"
-    # Future: EU_GDPR = "eu_gdpr", CA_PIPEDA = "ca_pipeda"
+class JurisdictionClassification(BaseModel):
+    """
+    Output schema for Agent 1: Jurisdiction Classifier.
 
+    The LLM is instructed to produce a JSON object matching this schema.
+    PydanticAI validates the output; on failure the agent retries once with
+    an error-correction prompt before recording to state.errors.
+    """
 
-class JurisdictionResult(BaseModel):
-    """Output schema for Agent 1: Jurisdiction Classifier."""
-
-    jurisdiction: Jurisdiction = Field(
+    jurisdiction: Literal["us_generic", "uk"] = Field(
         ...,
-        description="Detected governing-law jurisdiction of the contract.",
+        description=(
+            "Detected governing-law jurisdiction. 'us_generic' for US law "
+            "(any state unless clearly UK), 'uk' for English/Welsh/Scottish law."
+        ),
     )
     confidence: float = Field(
         ...,
         ge=0.0,
         le=1.0,
-        description="Model confidence in the jurisdiction classification (0–1).",
+        description="Model confidence in the classification (0=no idea, 1=certain).",
+    )
+    reasoning: str = Field(
+        ...,
+        description=(
+            "One-to-three sentence explanation of how the jurisdiction was determined, "
+            "citing specific contract language if found."
+        ),
     )
     governing_law_clause_text: Optional[str] = Field(
         default=None,
-        description="Verbatim text of the governing law clause if found, else None.",
+        description="Verbatim text of the governing-law clause if explicitly found, else None.",
     )
     fallback_used: bool = Field(
         default=False,
-        description="True if jurisdiction fell back to us_generic due to UNKNOWN result.",
+        description="True if the model fell back to 'us_generic' due to ambiguity.",
     )
-    rationale: str = Field(
-        ...,
-        description="One-sentence explanation of how the jurisdiction was determined.",
-    )
+
+
+# Backward-compat alias used elsewhere in the codebase
+JurisdictionResult = JurisdictionClassification

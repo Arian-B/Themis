@@ -7,10 +7,15 @@ LangGraph's checkpointing, human-in-the-loop interrupts, and graph replay.
 
 Design invariants:
   - All fields are Optional so nodes can partially populate state without error.
-  - Schema-validated payloads (PydanticAI models) are stored as dicts after
+  - Schema-validated payloads (Pydantic models) are stored as dicts after
     `.model_dump()` so they survive LangGraph's JSON serialization round-trip.
   - `errors` is an append-only log; nodes must never clear it.
   - `tenant_id` is immutable after graph entry — never written by agent nodes.
+
+Day 2 fields added:
+  - contract_id: str — identifier threaded through state so Agent 2 can tag clauses
+  - jurisdiction_result: dict | None — serialised JurisdictionClassification
+  - extraction_result: dict | None — serialised ExtractionResult
 """
 
 from __future__ import annotations
@@ -30,6 +35,9 @@ class ThemisState(TypedDict, total=False):
     """Unique ID for this analysis session (UUID4). Used as Langfuse trace ID."""
 
     # ── Inbound document ──────────────────────────────────────────────────────
+    contract_id: str
+    """Unique identifier for the contract being analyzed. Set at graph entry."""
+
     raw_pdf_bytes: bytes
     """Raw bytes of the uploaded contract PDF. Cleared after extraction to save memory."""
 
@@ -40,12 +48,24 @@ class ThemisState(TypedDict, total=False):
     """Filename, upload timestamp, page count, MIME type, etc."""
 
     # ── Jurisdiction routing (Agent 1 output) ─────────────────────────────────
-    jurisdiction_result: dict[str, Any]
-    """Serialised JurisdictionResult schema. Includes detected jurisdiction + confidence."""
+    jurisdiction_result: Optional[dict[str, Any]]
+    """
+    Serialised JurisdictionClassification schema.
+    Keys: jurisdiction, confidence, reasoning, governing_law_clause_text, fallback_used.
+    None if the node has not yet run or errored.
+    """
 
     # ── Extracted clauses (Agent 2 output) ────────────────────────────────────
+    extraction_result: Optional[dict[str, Any]]
+    """
+    Serialised ExtractionResult schema.
+    Keys: contract_id, clauses (list of ExtractedClause dicts).
+    None if the node has not yet run or errored.
+    """
+
+    # ── Legacy clause bundle (used by Agent 3+ stubs) ─────────────────────────
     clause_bundle: dict[str, Any]
-    """Serialised ClauseBundle schema. List of segmented, typed clauses."""
+    """Serialised ClauseBundle schema. Populated in later phases."""
 
     # ── Risk analysis (Agent 3 output) ────────────────────────────────────────
     risk_report: dict[str, Any]
