@@ -31,6 +31,7 @@ logging.basicConfig(
 )
 logging.getLogger("agents").setLevel(logging.INFO)
 logging.getLogger("graph").setLevel(logging.INFO)
+logging.getLogger("retrieval").setLevel(logging.INFO)
 
 
 def load_contract_by_id(contract_id: str) -> dict:
@@ -81,7 +82,7 @@ def run(contract_id: str | None = None, raw_text: str | None = None) -> None:
         "errors": [],
     }
 
-    print("Running graph: START -> jurisdiction_classifier -> extraction_agent -> END")
+    print("Running graph: START -> jurisdiction_classifier -> extraction_agent -> risk_analysis_agent -> verification_agent -> END")
     result = graph.invoke(initial_state)
 
     # ── Jurisdiction Result ────────────────────────────────────────────────────
@@ -105,6 +106,42 @@ def run(contract_id: str | None = None, raw_text: str | None = None) -> None:
         ct = clause.get("clause_type", "?")
         section = clause.get("section_reference", "?")
         print(f"  {i:2d}. [{ct:>16}] {section}")
+
+    # ── Risk & Verification Result ─────────────────────────────────────────────
+    risks = result.get("risk_analysis_result") or []
+    verifications = result.get("verification_result") or []
+    print(f"\n{'-' * 70}")
+    print(f"RISK ANALYSIS — {len(risks)} unverified risk flags generated")
+    print("-" * 70)
+
+    for r in risks:
+        c_id = r.get("clause_id")
+        level = r.get("risk_level", "unknown").upper()
+        concern = r.get("concern", "")
+        reasoning = r.get("reasoning", "")
+        grounded = r.get("grounded", False)
+        status = "[VERIFIED]" if grounded else "[UNVERIFIED]"
+        
+        print(f"\n  Flag for Clause: {c_id}")
+        print(f"  Severity: {level:^8} | Status: {status}")
+        print(f"  Concern:   {concern}")
+        print(f"  Reasoning: {reasoning}")
+        
+        r_id = c_id + "_risk"
+        claims = [v for v in verifications if v.get("source_risk_flag_id") == r_id]
+        if claims:
+            print("  Atomic Claims:")
+            for c in claims:
+                c_status = "[GROUNDED]" if c.get("grounded") else "[UNVERIFIED]"
+                source = c.get("supporting_source_id") or "None"
+                g_source = c.get("grounding_source", "none")
+                cosine = c.get("raw_cosine_score")
+                cosine_str = f"{cosine:.4f}" if cosine is not None else "N/A"
+                print(f"    - {c_status} {c.get('claim_text')}")
+                print(f"      Source: {g_source} | Cosine: {cosine_str} | SupportingID: {source}")
+        else:
+            print("  Atomic Claims: None extracted.")
+
 
     # ── Errors ─────────────────────────────────────────────────────────────────
     errors = result.get("errors") or []

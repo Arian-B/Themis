@@ -34,7 +34,7 @@ import uuid
 from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_ollama import ChatOllama
+from utils.llm_provider import get_complex_reasoning_llm
 from pydantic import ValidationError
 
 from graph.state import ThemisState
@@ -213,7 +213,7 @@ def _segment_contract(text: str) -> list[tuple[str, str]]:
 # ---------------------------------------------------------------------------
 
 def _classify_segment(
-    llm: ChatOllama,
+    llm,
     heading: str,
     text: str,
     callbacks: list,
@@ -316,20 +316,19 @@ def _fuzzy_map_clause_type(raw: str, valid: set[str]) -> str | None:
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _build_llm() -> ChatOllama:
-    host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-    model = os.getenv("OLLAMA_CLASSIFY_MODEL", "llama3.1:8b")
+def _build_llm():
+    import os
+    from langchain_ollama import ChatOllama
     return ChatOllama(
-        model=model,
-        base_url=host,
+        model="llama3.1:8b",
+        base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
         temperature=0,
         format="json",
-        timeout=120,
     )
 
 
 def _invoke_llm(
-    llm: ChatOllama,
+    llm,
     messages: list,
     callbacks: list,
     attempt: int,

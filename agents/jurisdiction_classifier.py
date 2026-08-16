@@ -35,7 +35,7 @@ import os
 from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_ollama import ChatOllama
+from utils.llm_provider import get_complex_reasoning_llm
 from pydantic import ValidationError
 
 from graph.state import ThemisState
@@ -172,20 +172,19 @@ def classify_jurisdiction(state: ThemisState) -> dict[str, Any]:
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _build_llm() -> ChatOllama:
-    host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-    model = os.getenv("OLLAMA_CLASSIFY_MODEL", "llama3.1:8b")
+def _build_llm():
+    import os
+    from langchain_ollama import ChatOllama
     return ChatOllama(
-        model=model,
-        base_url=host,
-        temperature=0,          # deterministic output
-        format="json",          # JSON mode: Ollama will always return valid JSON
-        timeout=120,
+        model="llama3.1:8b",
+        base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+        temperature=0,
+        format="json",
     )
 
 
 def _invoke_llm(
-    llm: ChatOllama,
+    llm,
     messages: list,
     callbacks: list,
     attempt: int,

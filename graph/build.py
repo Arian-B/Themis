@@ -47,12 +47,18 @@ def build_graph():
     # ── Nodes ──────────────────────────────────────────────────────────────────
     builder.add_node("jurisdiction_classifier", classify_jurisdiction)
     builder.add_node("extraction_agent", extract_clauses)
+    from agents.risk_analysis_agent import analyze_risk
+    builder.add_node("risk_analysis_agent", analyze_risk)
+    from agents.verification_agent import verify_risks
+    builder.add_node("verification_agent", verify_risks)
 
-    # ── Edges — linear for Day 2 ───────────────────────────────────────────────
+    # ── Edges — linear for Day 3 ───────────────────────────────────────────────
     builder.add_edge(START, "jurisdiction_classifier")
     builder.add_edge("jurisdiction_classifier", "extraction_agent")
-    builder.add_edge("extraction_agent", END)
+    builder.add_edge("extraction_agent", "risk_analysis_agent")
+    builder.add_edge("risk_analysis_agent", "verification_agent")
+    builder.add_edge("verification_agent", END)
 
     graph = builder.compile()
-    logger.info("Themis Day 2 graph compiled: START → jurisdiction_classifier → extraction_agent → END")
+    logger.info("Themis Day 3 graph compiled: START → jurisdiction_classifier → extraction_agent → risk_analysis_agent → verification_agent → END")
     return graph

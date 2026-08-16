@@ -31,11 +31,11 @@ dependencies = [
   # LLM providers
   "langchain-anthropic>=0.2.0,<0.3",   # Claude (risk analysis, negotiation)
   "langchain-ollama>=0.2.0,<0.3",       # Ollama (classification, extraction)
-  "langchain-openai>=0.2.0,<0.3",       # OpenAI / Kimi API compatible
-  "anthropic>=0.36.0,<0.37",
+  "langchain-openai>=0.2.0,<2.0",       # OpenAI / Kimi API compatible
+  "anthropic>=0.40.0,<1.0",
 
   # Vector store
-  "langchain-qdrant>=0.1.0,<0.2",
+  "langchain-qdrant>=0.1.0,<2.0",
   "qdrant-client>=1.9.0,<2.0",
 
   # Graph store

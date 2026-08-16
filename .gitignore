@@ -36,3 +36,9 @@ frontend/dist/
 frontend/.vite/
 *.pem
 *.key
+.venv/
+__pycache__/
+*.pyc
+.venv/
+__pycache__/
+*.pyc

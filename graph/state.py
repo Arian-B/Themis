@@ -24,6 +24,7 @@ from typing import Annotated, Any, Optional
 from typing_extensions import TypedDict
 
 from langgraph.graph import add_messages
+import operator
 
 
 class ThemisState(TypedDict, total=False):
@@ -68,12 +69,12 @@ class ThemisState(TypedDict, total=False):
     """Serialised ClauseBundle schema. Populated in later phases."""
 
     # ── Risk analysis (Agent 3 output) ────────────────────────────────────────
-    risk_report: dict[str, Any]
-    """Serialised RiskReport schema. Unverified risk flags from the Risk Analysis Agent."""
+    risk_analysis_result: Annotated[list[dict[str, Any]], operator.add]
+    """List of serialised RiskFlag schemas representing unverified risks."""
 
     # ── Atomic verification (Agent 4 output) ──────────────────────────────────
-    verified_risk_report: dict[str, Any]
-    """Serialised VerifiedRiskReport. Only verified assertions; discarded ones logged."""
+    verification_result: Annotated[list[dict[str, Any]], operator.add]
+    """List of serialised VerificationResult schemas for all atomic claims."""
 
     # ── Knowledge graph write (Agent 5 output) ────────────────────────────────
     kg_write_result: dict[str, Any]
