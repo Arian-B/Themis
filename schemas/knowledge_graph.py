@@ -8,51 +8,29 @@ Entity and Relationship types mirror the Neo4j node/edge labels used in graph_st
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
 
-
-class EntityType(str, Enum):
-    PARTY = "Party"
-    OBLIGATION = "Obligation"
-    CONTRACT = "Contract"
-    CLAUSE = "Clause"
-    REGULATION = "Regulation"
-
-
-class PartyType(str, Enum):
-    VENDOR = "vendor"
-    CLIENT = "client"
-    COUNTERPARTY = "counterparty"
-    UNKNOWN = "unknown"
-
-
-class Entity(BaseModel):
+class GraphEntity(BaseModel):
     """A node to be written to Neo4j."""
 
     entity_id: str
-    entity_type: EntityType
-    tenant_id: str
-    properties: dict[str, Any] = Field(
-        ...,
-        description="Key-value properties for this node. Must include tenant_id.",
-    )
+    entity_type: Literal["party", "obligation", "date", "counterparty", "clause_reference"]
+    name: str
+    contract_id: str
 
 
-class Relationship(BaseModel):
+class GraphRelationship(BaseModel):
     """An edge to be written to Neo4j."""
 
     from_entity_id: str
-    from_entity_type: EntityType
+    to_entity_id: str
     relationship_type: str = Field(
         ...,
-        description="Neo4j relationship label (e.g., PARTY_TO, CONTAINS, CREATES).",
+        description="Neo4j relationship label (e.g., obligated_by, references, expires_on)",
     )
-    to_entity_id: str
-    to_entity_type: EntityType
-    properties: dict[str, Any] = Field(default_factory=dict)
-
+    contract_id: str
 
 class KGWriteResult(BaseModel):
     """Output schema for Agent 5: KG Writer Agent."""
@@ -61,8 +39,8 @@ class KGWriteResult(BaseModel):
     tenant_id: str
     entities_written: int
     relationships_written: int
-    entities: list[Entity]
-    relationships: list[Relationship]
+    entities: list[GraphEntity]
+    relationships: list[GraphRelationship]
     write_errors: list[str] = Field(
         default_factory=list,
         description="Non-fatal write errors (e.g., duplicate node — idempotent merge used).",
