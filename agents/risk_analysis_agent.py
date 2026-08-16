@@ -18,7 +18,7 @@ from pydantic import ValidationError
 from graph.state import ThemisState
 from schemas.risk import RiskFlag
 from tools.pii.redactor import redact_pii
-from retrieval.qdrant_retriever import get_retriever
+from utils.mcp_client import call_mcp_tool
 
 logger = logging.getLogger(__name__)
 
@@ -59,10 +59,8 @@ def analyze_risk(state: ThemisState) -> dict[str, Any]:
         return {}
 
     jurisdiction = state.get("jurisdiction_result", {}).get("jurisdiction", "us_generic")
-    retriever = get_retriever(jurisdiction=jurisdiction, k=3)
-    if not retriever:
-        logger.error("risk_analysis_agent: Retriever could not be initialized.")
-        return {}
+    
+    mcp_script = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "tools", "mcp", "retrieval_server.py"))
 
     llm = _build_llm()
     errors: list[dict[str, Any]] = list(state.get("errors") or [])
@@ -77,13 +75,23 @@ def analyze_risk(state: ThemisState) -> dict[str, Any]:
         # Redact PII before sending to the external LLM
         redacted_text = redact_pii(raw_text)
 
-        # Retrieve grounding context
-        # We query the retriever using the redacted text
-        docs = retriever.invoke(redacted_text)
+        # Retrieve grounding context via MCP
+        try:
+            docs_json = call_mcp_tool(mcp_script, "search_corpus", {"query": redacted_text, "jurisdiction": jurisdiction, "k": 3})
+            docs = json.loads(docs_json)
+            if isinstance(docs, dict) and "error" in docs:
+                logger.error(f"risk_analysis_agent: MCP retrieval error: {docs['error']}")
+                docs = []
+        except Exception as e:
+            logger.error(f"risk_analysis_agent: failed to call MCP retrieval: {e}")
+            docs = []
+
         context_parts = []
         for i, doc in enumerate(docs):
-            doc_id = doc.metadata.get("id") or doc.id or f"doc_{i}"
-            context_parts.append(f"--- Document ID: {doc_id} ---\n{doc.page_content}")
+            # doc is a dict from MCP: {"id": ..., "content": ..., "metadata": ...}
+            doc_id = doc.get("id") or f"doc_{i}"
+            content = doc.get("content", "")
+            context_parts.append(f"--- Document ID: {doc_id} ---\n{content}")
         
         context_str = "\n\n".join(context_parts)
         

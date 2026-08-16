@@ -155,6 +155,16 @@ def extract_clauses(state: ThemisState) -> dict[str, Any]:
         # Return partial result to avoid blocking downstream completely
         result = ExtractionResult(contract_id=contract_id, clauses=clauses)
 
+    # Persist the extracted clauses for cross-clause lookups via MCP server
+    runtime_dir = os.path.join("data", "runtime")
+    os.makedirs(runtime_dir, exist_ok=True)
+    cache_path = os.path.join(runtime_dir, f"extraction_{contract_id}.json")
+    try:
+        with open(cache_path, "w", encoding="utf-8") as f:
+            f.write(result.model_dump_json())
+    except Exception as e:
+        logger.warning("extraction_agent: failed to cache extraction result to %s: %s", cache_path, e)
+
     return {
         "extraction_result": result.model_dump(),
         **({"errors": errors} if errors else {}),

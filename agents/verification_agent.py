@@ -44,7 +44,7 @@ from pydantic import BaseModel, ValidationError
 
 from graph.state import ThemisState
 from schemas.risk import AtomicClaim, VerificationResult
-from retrieval.qdrant_retriever import get_retriever, _get_embeddings
+from utils.mcp_client import call_mcp_tool
 
 logger = logging.getLogger(__name__)
 
@@ -179,11 +179,10 @@ def verify_risks(state: ThemisState) -> dict[str, Any]:
     extraction_result = state.get("extraction_result") or {}
     clauses_list = extraction_result.get("clauses", [])
     clause_map: dict[str, dict] = {c["clause_id"]: c for c in clauses_list}
+    
+    contract_id = state.get("contract_id", "")
 
-    # Build Qdrant vector store (for similarity_search_with_score)
-    vector_store = _get_vector_store(jurisdiction=jurisdiction)
-    if vector_store is None:
-        logger.warning("verification_agent: Qdrant vector store unavailable — statute_corpus path disabled.")
+    mcp_script = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "tools", "mcp", "retrieval_server.py"))
 
     llm = _build_llm()
     errors: list[dict[str, Any]] = list(state.get("errors") or [])
@@ -235,16 +234,17 @@ def verify_risks(state: ThemisState) -> dict[str, Any]:
         for claim_text_raw in claims_list:
             claim_id = str(uuid.uuid4())
             claim_str = str(claim_text_raw)
-
             result = _verify_claim(
                 claim_str=claim_str,
                 claim_id=claim_id,
                 flag_id=flag_id,
                 clause_text=clause_text,
                 clause_id=clause_id,
+                contract_id=contract_id,
+                jurisdiction=jurisdiction,
                 collection_name=collection_name,
                 cosine_threshold=cosine_threshold,
-                vector_store=vector_store,
+                mcp_script=mcp_script,
                 llm=llm,
             )
 
@@ -275,15 +275,18 @@ def _verify_claim(
     flag_id: str,
     clause_text: str,
     clause_id: str,
+    contract_id: str,
+    jurisdiction: str,
     collection_name: str,
     cosine_threshold: float,
-    vector_store,
+    mcp_script: str,
     llm: ChatOpenAI,
 ) -> VerificationResult:
     """
-    Two-path verification:
+    Multi-path verification:
       Path A — contract_text: check claim against clause's own extracted text.
-      Path B — statute_corpus: fall through to Qdrant if path A doesn't ground it.
+      Path B — full_contract_text: check claim against all clauses (via MCP) if A fails.
+      Path C — statute_corpus: fall through to Qdrant if A and B don't ground it.
     """
 
     # ── Path A: contract_text ───────────────────────────────────────────────
@@ -324,35 +327,81 @@ def _verify_claim(
             clause_id,
         )
 
-    # ── Path B: statute_corpus ──────────────────────────────────────────────
-    if vector_store is None:
-        logger.info(
-            "  [STATUTE_CORPUS] SKIPPED (no vector_store) | claim='%s' → UNVERIFIED", claim_str
-        )
-        return _unverified(claim_id, flag_id, claim_str)
+    # ── Path B: full_contract_text (Cross-clause lookup) ─────────────────────
+    if contract_id:
+        try:
+            full_clauses_json = call_mcp_tool(mcp_script, "get_contract_clauses", {"contract_id": contract_id})
+            data = json.loads(full_clauses_json)
+            full_text = ""
+            if "clauses" in data and isinstance(data["clauses"], list):
+                # reconstruct full text
+                full_text = "\n\n".join([f"{c.get('section_reference', '')}:\n{c.get('text', '')}" for c in data["clauses"]])
+                
+            if full_text.strip():
+                ver_msgs = [
+                    SystemMessage(content=_CONTRACT_TEXT_VERIFY_PROMPT),
+                    HumanMessage(
+                        content=f"FULL CONTRACT TEXT:\n{full_text}\n\nCLAIM: {claim_str}"
+                    ),
+                ]
+                raw = _invoke_llm(llm, ver_msgs, attempt=1)
+                ver_data, err = _parse_json(raw)
 
-    # Retrieve with raw cosine scores
+                if ver_data and isinstance(ver_data, dict) and ver_data.get("grounded") is True:
+                    conf = float(ver_data.get("confidence", 1.0))
+                    logger.info(
+                        "  [FULL_CONTRACT_TEXT] GROUNDED | claim='%s' | contract=%s | llm_conf=%.2f",
+                        claim_str, contract_id, conf,
+                    )
+                    return VerificationResult(
+                        claim_id=claim_id,
+                        source_risk_flag_id=flag_id,
+                        claim_text=claim_str,
+                        grounded=True,
+                        supporting_source_id=contract_id,
+                        grounding_source="contract_text", # Semantically still contract_text
+                        raw_cosine_score=None,
+                        confidence=conf,
+                    )
+                else:
+                    logger.info(
+                        "  [FULL_CONTRACT_TEXT] NOT grounded | claim='%s' → falling through to statute_corpus",
+                        claim_str,
+                    )
+        except Exception as e:
+            logger.warning(f"  [FULL_CONTRACT_TEXT] lookup failed: {e}")
+
+    # ── Path C: statute_corpus ──────────────────────────────────────────────
+    logger.info("  [PATH C REACHED] Attempting statute_corpus retrieval for claim: '%s'", claim_str)
+    # Retrieve with raw cosine scores via MCP
     try:
-        docs_with_scores = vector_store.similarity_search_with_score(claim_str, k=3)
+        docs_json = call_mcp_tool(mcp_script, "search_corpus", {"query": claim_str, "jurisdiction": jurisdiction, "k": 3})
+        docs = json.loads(docs_json)
+        if isinstance(docs, dict) and "error" in docs:
+            logger.error("  [STATUTE_CORPUS] retrieval error: %s", docs["error"])
+            docs = []
     except Exception as exc:
         logger.error("  [STATUTE_CORPUS] retrieval failed: %s", exc)
         return _unverified(claim_id, flag_id, claim_str)
 
-    if not docs_with_scores:
+    if not docs:
         logger.info("  [STATUTE_CORPUS] 0 docs returned | claim='%s' → UNVERIFIED", claim_str)
         return _unverified(claim_id, flag_id, claim_str)
 
     # Log all retrieved docs with raw cosine scores
-    for di, (doc, score) in enumerate(docs_with_scores):
-        doc_id = _extract_doc_id(doc)
-        preview = doc.page_content[:150].replace("\n", " ")
+    for di, doc in enumerate(docs):
+        doc_id = doc.get("id", "unknown")
+        content = doc.get("content", "")
+        score = doc.get("score", 0.0)
+        preview = content[:150].replace("\n", " ")
         logger.info(
             "  [STATUTE_CORPUS] doc[%d] id=%s raw_cosine=%.6f text='%s...'",
             di, doc_id, score, preview,
         )
 
-    best_doc, best_score = docs_with_scores[0]
-    best_doc_id = _extract_doc_id(best_doc)
+    best_doc = docs[0]
+    best_score = best_doc.get("score", 0.0)
+    best_doc_id = best_doc.get("id", "unknown")
 
     # ── Cosine threshold gate ───────────────────────────────────────────────
     if best_score < cosine_threshold:
@@ -373,8 +422,10 @@ def _verify_claim(
         )
 
     # ── LLM verification against statute corpus ─────────────────────────────
-    for doc, score in docs_with_scores:
-        doc_id = _extract_doc_id(doc)
+    for doc in docs:
+        doc_id = doc.get("id", "unknown")
+        score = doc.get("score", 0.0)
+        content = doc.get("content", "")
 
         if score < cosine_threshold:
             logger.info(
@@ -385,7 +436,7 @@ def _verify_claim(
         ver_msgs = [
             SystemMessage(content=_STATUTE_VERIFY_PROMPT),
             HumanMessage(
-                content=f"CLAIM: {claim_str}\n\nSOURCE TEXT:\n{doc.page_content}"
+                content=f"CLAIM: {claim_str}\n\nSOURCE TEXT:\n{content}"
             ),
         ]
         raw_ver = _invoke_llm(llm, ver_msgs, attempt=1)
@@ -432,8 +483,6 @@ def _verify_claim(
 # ---------------------------------------------------------------------------
 
 from utils.llm_provider import get_complex_reasoning_llm
-from langchain_qdrant import QdrantVectorStore
-from qdrant_client import QdrantClient
 
 
 def _build_llm() -> ChatOpenAI:
