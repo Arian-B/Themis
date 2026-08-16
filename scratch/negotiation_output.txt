@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "D:\Coding\themis\tests\integration\test_day6_negotiation.py", line 18, in <module>
+    from agents.negotiation_simulation import run_negotiation_node
+  File "D:\Coding\themis\agents\negotiation_simulation.py", line 92
+    def proposer_node(state: NegotiationState) -> dict:`n    logger.info("ENTERED NODE: proposer")
+                                                       ^
+SyntaxError: invalid syntax

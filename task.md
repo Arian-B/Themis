@@ -1,0 +1,8 @@
+- `[x]` Day 6 Execution
+  - `[x]` Update schemas (`negotiation.py`, `feedback.py`)
+  - `[x]` Create Supabase migration for `critic_lessons`
+  - `[x]` Implement `agents/negotiation_simulation.py`
+  - `[x]` Wire `negotiation_simulation` into `graph/build.py`
+  - `[x]` Implement `agents/critic_agent.py`
+  - `[x]` Write and execute `test_day6_negotiation.py`
+  - `[x]` Execute `critic_agent.py` and query DB

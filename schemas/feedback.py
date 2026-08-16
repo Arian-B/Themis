@@ -3,6 +3,7 @@ schemas/feedback.py — PydanticAI schemas for human-in-the-loop feedback.
 
 HumanOverride is populated by the HITL interrupt mechanism in LangGraph.
 CorrectionRecord is the persistent form written to PostgreSQL.
+CriticFeedback is the output from the Critic Agent (Day 6).
 """
 
 from __future__ import annotations
@@ -41,3 +42,13 @@ class CorrectionRecord(BaseModel):
     reviewer_id: str
     timestamp: str
     processed: bool = False
+
+
+class CriticFeedback(BaseModel):
+    """
+    Output from the Critic Agent (Day 6).
+    """
+    flag_id: str
+    human_decision: str
+    was_flag_useful: bool
+    lesson: str
