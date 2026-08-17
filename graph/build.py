@@ -89,7 +89,24 @@ def build_graph(checkpointer=None):
         }
     )
     
-        from agents.negotiation_simulation import run_negotiation_node`n    builder.add_node("negotiation_simulation", run_negotiation_node)`n`n    def route_after_human_review(state: ThemisState) -> str:`n        overrides = state.get("human_override", {}).get("overrides", [])`n        if any(ov.get("status") == "accepted" for ov in overrides):`n            return "negotiation_simulation"`n        return "knowledge_graph_writer"`n`n    builder.add_conditional_edges(`n        "human_review",`n        route_after_human_review,`n        {`n            "negotiation_simulation": "negotiation_simulation",`n            "knowledge_graph_writer": "knowledge_graph_writer"`n        }`n    )`n    builder.add_edge("negotiation_simulation", "knowledge_graph_writer")
+    from agents.negotiation_simulation import run_negotiation_node
+    builder.add_node("negotiation_simulation", run_negotiation_node)
+
+    def route_after_human_review(state: ThemisState) -> str:
+        overrides = state.get("human_override", {}).get("overrides", [])
+        if any(ov.get("status") == "accepted" for ov in overrides):
+            return "negotiation_simulation"
+        return "knowledge_graph_writer"
+
+    builder.add_conditional_edges(
+        "human_review",
+        route_after_human_review,
+        {
+            "negotiation_simulation": "negotiation_simulation",
+            "knowledge_graph_writer": "knowledge_graph_writer"
+        }
+    )
+    builder.add_edge("negotiation_simulation", "knowledge_graph_writer")
     builder.add_edge("knowledge_graph_writer", END)
 
     # Compile with checkpointer and interrupt

@@ -19,12 +19,12 @@ def get_complex_reasoning_llm(temperature: float = 0, **kwargs) -> ChatOpenAI:
         api_key = os.getenv("GROQ_API_KEY", "")
         base_url = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
         # Ensure we use a strong currently-available Groq model:
-        model = "llama-3.1-8b-instant" 
+        model = "openai/gpt-oss-120b" 
     else:
         logger.warning(f"Unknown COMPLEX_TIER_PROVIDER '{provider}', falling back to groq.")
         api_key = os.getenv("GROQ_API_KEY", "")
         base_url = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
-        model = "llama-3.1-8b-instant"
+        model = "openai/gpt-oss-120b"
 
     if not api_key:
         logger.warning(f"No API key found for provider {provider}. (Expected KIMI_API_KEY or GROQ_API_KEY)")

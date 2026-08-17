@@ -1,8 +1,9 @@
-- `[x]` Day 6 Execution
-  - `[x]` Update schemas (`negotiation.py`, `feedback.py`)
-  - `[x]` Create Supabase migration for `critic_lessons`
-  - `[x]` Implement `agents/negotiation_simulation.py`
-  - `[x]` Wire `negotiation_simulation` into `graph/build.py`
-  - `[x]` Implement `agents/critic_agent.py`
-  - `[x]` Write and execute `test_day6_negotiation.py`
-  - `[x]` Execute `critic_agent.py` and query DB
+- `[/]` Day 7 Execution
+  - `[ ]` Implement `api/dependencies.py` (Supabase JWT)
+  - `[ ]` Implement `api/main.py` setup
+  - `[ ]` Implement `api/routers/contracts.py` endpoints
+  - `[ ]` Create n8n automation and hook
+  - `[ ]` Update `docker-compose.yml`
+  - `[ ]` Write and run tenant isolation tests
+  - `[ ]` Write and run Day 7 full API tests
+  - `[ ]` Output all raw evidence

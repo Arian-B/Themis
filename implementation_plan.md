@@ -1,49 +1,53 @@
-# Day 6 Implementation Plan: Negotiation Simulation + Critic Feedback Loop
+# Day 7 Implementation Plan: FastAPI Backend & n8n Automation
 
 ## Objective
-Implement Day 6 deliverables: a genuine LangGraph cycle for negotiation simulation and a critic feedback agent that processes human override decisions from the `audit_log` into reusable lessons.
+Build a production-grade FastAPI application that wraps the Themis LangGraph pipeline, protected by Supabase JWT authentication. Integrate an n8n webhook automation for high-risk flags, update docker-compose, and test cross-tenant isolation and the full HTTP lifecycle.
 
 ## Proposed Changes
 
-### 1. Schemas
-#### [MODIFY] [schemas/negotiation.py](file:///d:/Coding/themis/schemas/negotiation.py)
-- Define `NegotiationTurn`: `turn_number`, `speaker` (Literal["proposer", "counterparty"]), `proposed_text`, `rationale`
-- Define `NegotiationTranscript`: `clause_id`, `turns: list[NegotiationTurn]`, `outcome` (Literal["agreement_reached", "impasse", "max_turns_reached"])
+### 1. Backend API (`api/`)
+#### [MODIFY] [api/dependencies.py](file:///d:/Coding/themis/api/dependencies.py)
+- Implement `get_current_tenant` to extract and validate the Supabase JWT from the Authorization header and return the `tenant_id`. 
 
-#### [MODIFY] [schemas/feedback.py](file:///d:/Coding/themis/schemas/feedback.py)
-- Define `CriticFeedback`: `flag_id`, `human_decision`, `was_flag_useful: bool`, `lesson: str`
+#### [MODIFY] [api/main.py](file:///d:/Coding/themis/api/main.py)
+- Include the `contracts` router.
+- Define basic startup/liveness handlers.
 
-### 2. Supabase Migration
-#### [NEW] [supabase/migrations/002_critic_lessons.sql](file:///d:/Coding/themis/supabase/migrations/002_critic_lessons.sql)
-- Create `critic_lessons` table with columns: `id`, `flag_id`, `human_decision`, `was_flag_useful`, `lesson`, `created_at`.
+#### [MODIFY] [api/routers/contracts.py](file:///d:/Coding/themis/api/routers/contracts.py)
+- **POST `/upload`**: Accept text/PDF, save a dummy record to Supabase `contracts` table (with `contract_id`), run `graph.ainvoke` asynchronously using FastAPI's `BackgroundTasks`, and immediately return `contract_id` and `status="processing"`.
+- **GET `/{contract_id}/status`**: Query the checkpointer using `contract_id` (used as `thread_id`) to return the current graph state (e.g. `awaiting_review`, `processing`, `complete`).
+- **GET `/{contract_id}/results`**: Query the checkpointer state and return `jurisdiction_result`, `extraction_result`, `risk_analysis_result`, and `verification_result`.
+- **GET `/{contract_id}/review-queue`**: Return flags currently paused at the human review gate by inspecting the `verification_result` for unverified/high-risk items.
+- **POST `/{contract_id}/review`**: Refactor `log_audit_event` from `scripts/resume_review.py` into a shared utility. Save human override to `audit_log`, update the LangGraph state with `graph.update_state`, and resume execution.
+- **POST `/{contract_id}/negotiate`**: Directly invoke `run_negotiation_node` from `agents/negotiation_simulation.py` for a specific approved flag and return the `negotiation_transcript`.
 
-### 3. Agents
-#### [NEW] [agents/negotiation_simulation.py](file:///d:/Coding/themis/agents/negotiation_simulation.py)
-- Implement a `StateGraph` subgraph that takes the flagged clause and loops between a `proposer_node` and a `counterparty_node`.
-- Use a conditional edge `route_negotiation` that checks if an agreement was reached or max turns (4) was hit.
-- Expose a `run_negotiation` function that can be added to the main graph.
+### 2. N8N Webhook Automation
+#### [NEW] [automation/n8n_high_risk_webhook.json](file:///d:/Coding/themis/automation/n8n_high_risk_webhook.json)
+- Create a mock n8n workflow exported as JSON that listens on a webhook (e.g., `http://localhost:5678/webhook/high-risk-flag`) and writes the payload to a local file (using "Write to File" node).
+#### [MODIFY] [api/routers/contracts.py](file:///d:/Coding/themis/api/routers/contracts.py) (or `verification_agent`)
+- When the graph detects a high-risk or unverified flag, dispatch an HTTP POST request to `N8N_WEBHOOK_URL` containing the flag details.
 
-#### [NEW] [agents/critic_agent.py](file:///d:/Coding/themis/agents/critic_agent.py)
-- Script/Agent that fetches rows from `audit_log` where `action = 'flag.overridden'`.
-- Uses an LLM to generate `CriticFeedback` based on the original concern and the human decision.
-- Writes the generated feedback to the `critic_lessons` table.
+### 3. Docker Compose
+#### [MODIFY] [docker-compose.yml](file:///d:/Coding/themis/docker-compose.yml)
+- Flesh out the `api` service to run FastAPI on port 8000 alongside Neo4j and Qdrant.
 
-### 4. Graph Wiring
-#### [MODIFY] [graph/build.py](file:///d:/Coding/themis/graph/build.py)
-- Add `negotiation_simulation` node.
-- Add a conditional edge after `human_review`: if a human requested negotiation for any flag (via `human_override` state), route to `negotiation_simulation`, else route to `knowledge_graph_writer`.
-- From `negotiation_simulation`, route to `knowledge_graph_writer`.
+### 4. Integration Tests
+#### [NEW] [tests/integration/test_tenant_isolation.py](file:///d:/Coding/themis/tests/integration/test_tenant_isolation.py)
+- Spin up two mock tenants using mocked JWT tokens. Prove Tenant A gets a 403/404 or empty data when requesting Tenant B's contract via `/contracts/{contract_id}/results`.
 
-### 5. Tests
-#### [NEW] [tests/integration/test_day6_negotiation.py](file:///d:/Coding/themis/tests/integration/test_day6_negotiation.py)
-- Test the `negotiation_simulation` subgraph explicitly with the known auto-renewal flag (flag 14) from the SaaS MSA.
-- Assert that the transcript has >1 turns and terminates correctly.
-
-### 6. Execution & Verification
-- Execute `test_day6_negotiation.py` and print the raw transcript.
-- Run `agents/critic_agent.py` on the 3 audit_log entries (flag index 0, 7, 14) to populate `critic_lessons`.
-- Query `critic_lessons` and print the rows to verify the critic loop worked.
+#### [NEW] [tests/integration/test_day7_api.py](file:///d:/Coding/themis/tests/integration/test_day7_api.py)
+- Use `fastapi.testclient.TestClient`.
+- Hit `/upload` with SaaS MSA text.
+- Poll `/status` until `awaiting_review`.
+- Hit `/review-queue` and verify items.
+- Submit `/review`.
+- Hit `/results` and assert structure.
+- Assert that n8n webhook was fired (e.g., check that the workflow's local file write occurred).
 
 ## Verification Plan
-- `pytest tests/integration/test_day6_negotiation.py -v -s`
-- Run `agents/critic_agent.py` directly and query the Supabase DB to show raw `critic_lessons`.
+1. Start the FastAPI server locally (`uvicorn api.main:app`).
+2. Run `curl` to `POST /contracts/upload` with the SaaS MSA and capture the JSON response.
+3. Poll the API via script and capture status transitions.
+4. Run `test_tenant_isolation.py` and print raw output.
+5. Run `test_day7_api.py` via pytest and print raw output.
+6. Verify the n8n JSON file and the resulting text file written by the n8n webhook.

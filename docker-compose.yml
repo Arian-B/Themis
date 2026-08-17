@@ -36,7 +36,7 @@ services:
       - neo4j_data:/data
       - neo4j_logs:/logs
       - neo4j_plugins:/plugins
-    environment:
+    env_file:`n      - .env`n    environment:
       NEO4J_AUTH: neo4j/${NEO4J_PASSWORD}
       NEO4J_PLUGINS: '["apoc"]'
       NEO4J_apoc_export_file_enabled: "true"
@@ -72,7 +72,7 @@ services:
       - "8000:8000"
     volumes:
       - .:/app   # bind mount for hot reload
-    environment:
+    env_file:`n      - .env`n    environment:
       # Infrastructure URLs
       NEO4J_URI: bolt://neo4j:7687
       NEO4J_USER: neo4j
@@ -92,7 +92,7 @@ services:
       # Auth & App
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       JWT_ALGORITHM: HS256
-      ENVIRONMENT: development
+      env_file:`n      - .env`n    environment: development
       LOG_LEVEL: DEBUG
     extra_hosts:
       - "host.docker.internal:host-gateway"
