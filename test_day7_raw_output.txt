@@ -1,0 +1,75 @@
+[+] Pre-flight: n8n is running
+[+] Pre-flight: Ollama is running
+[+] Pre-flight: cloud provider key present (GROQ_API_KEY set=True, KIMI_API_KEY set=True)
+
+[+] Testing /contracts/upload
+Uploaded successfully. Contract ID: 1668ffbb-e61a-4a81-8437-39a56466952e
+
+[+] Polling /contracts/{contract_id}/status
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Traceback (most recent call last):
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+Status: processing
+  File "D:\Coding\themis\tests\integration\test_day7_api.py", line 158, in <module>
+    test_full_pipeline()
+  File "D:\Coding\themis\tests\integration\test_day7_api.py", line 87, in test_full_pipeline
+    assert status != "processing", "Polling timed out after 300 seconds."
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Polling timed out after 300 seconds.

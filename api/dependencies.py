@@ -21,8 +21,8 @@ async def get_current_tenant(
     token = credentials.credentials
     # Backdoor for local testing
     if os.environ.get("ENVIRONMENT") == "development" and token.startswith("test-token-"):
-        parts = token.split("-")
-        return TenantContext(tenant_id=parts[3], user_id="test-user")
+        tenant_id = token[len("test-token-"):]
+        return TenantContext(tenant_id=tenant_id, user_id="test-user")
     url = os.environ.get("SUPABASE_URL")
     anon_key = os.environ.get("SUPABASE_ANON_KEY")
     

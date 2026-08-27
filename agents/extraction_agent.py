@@ -328,13 +328,28 @@ def _fuzzy_map_clause_type(raw: str, valid: set[str]) -> str | None:
 
 def _build_llm():
     import os
-    from langchain_ollama import ChatOllama
-    return ChatOllama(
-        model="llama3.1:8b",
-        base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
-        temperature=0,
-        format="json",
-    )
+    import logging
+    import requests as __r
+
+    ollama_host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+    try:
+        __r.get(f"{ollama_host}/api/tags", timeout=3)
+        from langchain_ollama import ChatOllama
+        return ChatOllama(
+            model="llama3.1:8b",
+            base_url=ollama_host,
+            temperature=0,
+            format="json",
+        )
+    except Exception as exc:
+        logging.getLogger(__name__).warning(
+            "Ollama not reachable at %s — falling back to cloud LLM for extraction. Error: %s",
+            ollama_host, exc,
+        )
+        from utils.llm_provider import get_complex_reasoning_llm
+        llm = get_complex_reasoning_llm(temperature=0)
+        llm = llm.bind(response_format={"type": "json_object"})
+        return llm
 
 
 def _invoke_llm(

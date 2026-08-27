@@ -2,8 +2,6 @@
 tools/pii/redactor.py — PII Redaction using Microsoft Presidio.
 """
 import logging
-from presidio_analyzer import AnalyzerEngine
-from presidio_anonymizer import AnonymizerEngine
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +13,13 @@ _anonymizer = None
 def _get_engines():
     global _analyzer, _anonymizer
     if _analyzer is None:
+        from presidio_analyzer import AnalyzerEngine
+
         logger.info("Initializing Presidio Analyzer...")
         _analyzer = AnalyzerEngine()
     if _anonymizer is None:
+        from presidio_anonymizer import AnonymizerEngine
+
         logger.info("Initializing Presidio Anonymizer...")
         _anonymizer = AnonymizerEngine()
     return _analyzer, _anonymizer

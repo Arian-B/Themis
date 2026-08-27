@@ -64,15 +64,29 @@ Respond ONLY with a corrected JSON object — no prose, no markdown fences.
 """
 
 def _build_llm():
-    # We use the same Ollama model as extraction (fast, local)
+    # Prefer Ollama (fast, local); fall back to cloud provider if unreachable.
     import os
-    from langchain_ollama import ChatOllama
-    return ChatOllama(
-        model="llama3.1:8b",
-        base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
-        temperature=0,
-        format="json",
-    )
+    import requests as __r
+
+    ollama_host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+    try:
+        __r.get(f"{ollama_host}/api/tags", timeout=3)
+        from langchain_ollama import ChatOllama
+        return ChatOllama(
+            model="llama3.1:8b",
+            base_url=ollama_host,
+            temperature=0,
+            format="json",
+        )
+    except Exception as exc:
+        logger.warning(
+            "Ollama not reachable at %s — falling back to cloud LLM for jurisdiction classification. Error: %s",
+            ollama_host, exc,
+        )
+        from utils.llm_provider import get_complex_reasoning_llm
+        llm = get_complex_reasoning_llm(temperature=0)
+        llm = llm.bind(response_format={"type": "json_object"})
+        return llm
 
 def _invoke_llm(llm, messages: list, attempt: int) -> str:
     try:

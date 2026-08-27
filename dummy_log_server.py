@@ -5,7 +5,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         body = self.rfile.read(content_length)
-        with open("n8n_high_risk_flags.log", "a") as f:
+        with open("n8n_high_risk_flags.log", "a", encoding="utf-8") as f:
             f.write(body.decode('utf-8') + "\n")
         self.send_response(200)
         self.end_headers()
