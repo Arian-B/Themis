@@ -1,9 +1,0 @@
-- `[/]` Day 7 Execution
-  - `[ ]` Implement `api/dependencies.py` (Supabase JWT)
-  - `[ ]` Implement `api/main.py` setup
-  - `[ ]` Implement `api/routers/contracts.py` endpoints
-  - `[ ]` Create n8n automation and hook
-  - `[ ]` Update `docker-compose.yml`
-  - `[ ]` Write and run tenant isolation tests
-  - `[ ]` Write and run Day 7 full API tests
-  - `[ ]` Output all raw evidence
