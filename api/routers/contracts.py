@@ -1,6 +1,5 @@
 import os
 import uuid
-import requests
 from typing import Any
 from fastapi import APIRouter, Depends, UploadFile, File, BackgroundTasks, HTTPException
 from api.dependencies import get_current_tenant, TenantContext, get_graph
@@ -49,6 +48,14 @@ def _enrich_flag_with_grounded(flag: dict[str, Any], verification_results: list[
     enriched = dict(flag)
     enriched["grounded"] = _flag_is_grounded(flag, verification_results)
     return enriched
+
+
+def _is_flag_reviewed(state: dict, flag_index: int) -> bool:
+    """Check if a flag at the given index has already been reviewed by a human."""
+    human_override = state.get("human_override", {})
+    overrides = human_override.get("overrides", []) if isinstance(human_override, dict) else []
+    return any(ov.get("flag_index") == flag_index for ov in overrides)
+
 
 def log_audit_event(tenant_id: str, action: str, resource_type: str, resource_id: str, details: dict):
     url = os.environ.get("SUPABASE_URL")
@@ -114,16 +121,8 @@ def run_pipeline(thread_id: str, file_path: str, tenant_id: str, graph: Any):
             })
 
     if high_risk_flags:
-        webhook_url = os.environ.get("N8N_WEBHOOK_URL")
-        if webhook_url:
-            try:
-                resp = requests.post(webhook_url, json={"contract_id": thread_id, "flags": high_risk_flags}, timeout=5)
-                logger.info(f"run_pipeline [{thread_id}]: n8n webhook succeeded ({resp.status_code}), flags={len(high_risk_flags)}")
-            except Exception as e:
-                logger.warning(f"run_pipeline [{thread_id}]: n8n webhook failed (n8n may not be running): {e}")
-                print(f"n8n webhook failed: {e}")
-        else:
-            logger.warning(f"run_pipeline [{thread_id}]: N8N_WEBHOOK_URL not set — webhook skipped")
+        for flag in high_risk_flags:
+            logger.warning(f"HIGH RISK FLAG: {flag.get('clause_id')} - {flag.get('concern')}")
 
 @router.post("/upload")
 async def upload_contract(
@@ -197,11 +196,12 @@ async def get_review_queue(contract_id: str, tenant: TenantContext = Depends(get
             f if isinstance(f, dict) else f.model_dump(),
             verification_results,
         )
-        for f in raw_flags
+        for i, f in enumerate(raw_flags)
         if _flag_requires_human_review(
             f if isinstance(f, dict) else f.model_dump(),
             verification_results,
         )
+        and not _is_flag_reviewed(state.values, i)
     ]
     return {"queue": queue}
 

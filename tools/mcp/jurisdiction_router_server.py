@@ -12,7 +12,7 @@ ROOT = Path(__file__).parent.parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from langchain_core.messages import HumanMessage, SystemMessage
 
 # Since this MCP server can run independently, we define the LLM logic here or import it
@@ -24,7 +24,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-mcp = FastMCP("themis-jurisdiction-router")
+mcp = MCPServer("themis-jurisdiction-router")
 
 _SYSTEM_PROMPT = """\
 You are a legal jurisdiction classifier. Your task is to determine the governing law

@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(ROOT, ".env"))
 
-from api.routers import contracts
+from api.routers import contracts, negotiate
 from graph.build import build_graph
 from langgraph.checkpoint.sqlite import SqliteSaver
 
@@ -54,6 +54,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(contracts.router, prefix="/api/v1")
+    app.include_router(negotiate.router, prefix="/api/v1")
 
     @app.get("/health", tags=["ops"], summary="Health check")
     async def health() -> dict:

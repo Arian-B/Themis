@@ -4,11 +4,11 @@ tools/mcp/regulatory_update_server.py — MCP server for tracking regulatory upd
 
 import json
 import logging
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
 logger = logging.getLogger(__name__)
 
-mcp = FastMCP("themis-regulatory-update")
+mcp = MCPServer("themis-regulatory-update")
 
 @mcp.tool()
 def get_tracked_sources(jurisdiction: str) -> str:

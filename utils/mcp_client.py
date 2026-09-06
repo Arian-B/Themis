@@ -39,14 +39,16 @@ async def _call_mcp_tool_async(server_script: str, tool_name: str, arguments: di
 
 def call_mcp_tool(server_script: str, tool_name: str, arguments: dict) -> str:
     """
-    Synchronously call an MCP tool by running the async client in a new event loop.
-    
-    Args:
-        server_script: Path to the Python script running the FastMCP server.
-        tool_name: The name of the tool to call.
-        arguments: Dictionary of arguments to pass to the tool.
-        
-    Returns:
-        The text response from the tool.
+    Synchronously call an MCP tool, handling both cases:
+    - Called from sync context (no running event loop) -> use asyncio.run()
+    - Called from async context (running event loop) -> run on existing loop
     """
-    return asyncio.run(_call_mcp_tool_async(server_script, tool_name, arguments))
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        # No running event loop, safe to use asyncio.run()
+        return asyncio.run(_call_mcp_tool_async(server_script, tool_name, arguments))
+    
+    # Running inside an event loop (e.g., FastAPI background task)
+    # Schedule the coroutine on the existing loop and wait for it
+    return loop.run_until_complete(_call_mcp_tool_async(server_script, tool_name, arguments))

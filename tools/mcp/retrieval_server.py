@@ -13,12 +13,12 @@ ROOT = Path(__file__).parent.parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from retrieval.qdrant_retriever import get_retriever
 
 logger = logging.getLogger(__name__)
 
-mcp = FastMCP("themis-retrieval")
+mcp = MCPServer("themis-retrieval")
 
 @mcp.tool()
 def search_corpus(query: str, jurisdiction: str, k: int = 3) -> str:

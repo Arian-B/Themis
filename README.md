@@ -78,10 +78,11 @@ Every agent boundary enforces a validated schema rather than passing free text d
 | PII handling | Microsoft Presidio | Redaction pass prior to any external model call |
 | Observability | Langfuse (self-hosted) | Full trace visibility; no third-party storage of sensitive contract data |
 | Evaluation | Ragas | Quantified RAG quality metrics on the verification layer |
-| Workflow automation | n8n | Deadline reminders, regulatory alerts, escalation routing |
 | Backend | FastAPI | Multi-tenant API, JWT-scoped tenant isolation |
 | Frontend | React + Vite | Contract viewer, portfolio risk dashboard, negotiation transcript view |
 | Infrastructure | Docker, Kubernetes, Terraform, GitHub Actions | Containerized services, IaC-provisioned environments, automated CI/CD |
+
+> **Note on workflow automation:** n8n was evaluated for high-risk alerting and deadline reminders but was descoped due to environment instability during local development. High-risk flags are now logged directly by the API for review via the human-in-the-loop queue.
 
 ---
 
@@ -124,7 +125,6 @@ pytest tests/unit/ -v
 | Qdrant dashboard | http://localhost:6333/dashboard |
 | Neo4j browser | http://localhost:7474 |
 | Langfuse | http://localhost:3000 |
-| n8n | http://localhost:5678 |
 | Ollama | http://localhost:11434 |
 
 ---
@@ -141,7 +141,6 @@ themis/
 ├── api/             FastAPI application, routers, middleware
 ├── observability/   Langfuse tracing integration
 ├── eval/            Ragas evaluation suite
-├── automation/      n8n workflow definitions
 ├── frontend/        React client
 ├── infra/           Terraform and Kubernetes manifests
 └── tests/           Unit and integration tests

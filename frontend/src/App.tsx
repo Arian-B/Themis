@@ -1,30 +1,32 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { ContractUploadPage } from './pages/ContractUploadPage'
+import { ContractResultsPage } from './pages/ContractResultsPage'
+import { ReviewQueuePage } from './pages/ReviewQueuePage'
+import { NegotiationPage } from './pages/NegotiationPage'
 
 /**
  * App.tsx — Top-level router for Themis frontend.
  *
  * Routes:
- *   /                        → redirect to /portfolio
- *   /contracts               → Contract upload + list view
- *   /contracts/:contractId   → Contract viewer with inline clause flags
- *   /portfolio               → Portfolio risk heatmap
+ *   /                        → redirect to /contracts (upload)
+ *   /contracts               → Contract upload view
+ *   /contracts/:contractId   → Contract results viewer
+ *   /contracts/:contractId/review → Review queue
  *   /negotiate/:sessionId    → Negotiation simulation transcript viewer
- *   /alerts                  → Regulatory alerts panel
- *
- * TODO (Phase 4): Implement route components.
- * Each route maps to a page component in src/pages/ (to be created).
+ *   /portfolio               → Portfolio risk heatmap (placeholder)
+ *   /alerts                  → Regulatory alerts panel (placeholder)
  */
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/portfolio" replace />} />
-      {/* TODO (Phase 4): Replace placeholders with real page components */}
-      <Route path="/portfolio"    element={<PlaceholderPage name="Portfolio Heatmap" />} />
-      <Route path="/contracts"    element={<PlaceholderPage name="Contract List" />} />
-      <Route path="/contracts/:contractId" element={<PlaceholderPage name="Contract Viewer" />} />
-      <Route path="/negotiate/:sessionId"  element={<PlaceholderPage name="Negotiation Viewer" />} />
-      <Route path="/alerts"       element={<PlaceholderPage name="Regulatory Alerts" />} />
+      <Route path="/" element={<Navigate to="/contracts" replace />} />
+      <Route path="/contracts" element={<ContractUploadPage />} />
+      <Route path="/contracts/:contractId" element={<ContractResultsPage />} />
+      <Route path="/contracts/:contractId/review" element={<ReviewQueuePage />} />
+      <Route path="/negotiate/:sessionId" element={<NegotiationPage />} />
+      <Route path="/portfolio" element={<PlaceholderPage name="Portfolio Heatmap" />} />
+      <Route path="/alerts" element={<PlaceholderPage name="Regulatory Alerts" />} />
     </Routes>
   )
 }

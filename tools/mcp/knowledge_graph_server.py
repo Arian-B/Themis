@@ -14,12 +14,12 @@ ROOT = Path(__file__).parent.parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from neo4j import GraphDatabase
 
 logger = logging.getLogger(__name__)
 
-mcp = FastMCP("themis-knowledge-graph")
+mcp = MCPServer("themis-knowledge-graph")
 
 URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 USER = os.getenv("NEO4J_USER", "neo4j")
