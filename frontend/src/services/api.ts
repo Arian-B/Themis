@@ -172,11 +172,6 @@ export const contractsApi = {
     })
     return response.data
   },
-      clause_ids: clauseIds,
-      client_position: clientPosition,
-    })
-    return response.data
-  },
 
   getNegotiationTranscript: async (sessionId: string): Promise<NegotiationTranscript> => {
     const response = await client.get(`/negotiate/${sessionId}`)

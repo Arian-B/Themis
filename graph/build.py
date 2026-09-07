@@ -13,6 +13,7 @@ from agents.jurisdiction_classifier import classify_jurisdiction
 from agents.risk_analysis_agent import analyze_risk
 from agents.verification_agent import verify_risks
 from agents.knowledge_graph_writer import extract_and_write_kg
+from agents.critic_agent import run_critic
 from graph.state import ThemisState
 
 logger = logging.getLogger(__name__)
@@ -53,6 +54,19 @@ def route_after_verification(state: ThemisState) -> str:
         return "knowledge_graph_writer"
 
 
+def critic_agent_node(state: ThemisState) -> dict:
+    """
+    Critic Agent node: reads human overrides from audit_log and writes lessons to critic_lessons.
+    Runs unconditionally after knowledge_graph_writer as part of normal pipeline execution.
+    """
+    logger.info("critic_agent: Running critic feedback analysis...")
+    try:
+        run_critic()
+        logger.info("critic_agent: Critic feedback analysis completed.")
+    except Exception as e:
+        logger.error(f"critic_agent: Failed with error: {e}")
+    return {}
+
 def build_graph(checkpointer=None):
     """
     Build and compile the Day 5 Themis graph.
@@ -72,6 +86,7 @@ def build_graph(checkpointer=None):
     builder.add_node("verification_agent", verify_risks)
     builder.add_node("human_review", human_review_node)
     builder.add_node("knowledge_graph_writer", extract_and_write_kg)
+    builder.add_node("critic_agent", critic_agent_node)
 
     # ── Edges ──────────────────────────────────────────────────────────────────
     builder.add_edge(START, "jurisdiction_classifier")
@@ -107,7 +122,8 @@ def build_graph(checkpointer=None):
         }
     )
     builder.add_edge("negotiation_simulation", "knowledge_graph_writer")
-    builder.add_edge("knowledge_graph_writer", END)
+    builder.add_edge("knowledge_graph_writer", "critic_agent")
+    builder.add_edge("critic_agent", END)
 
     # Compile with checkpointer and interrupt
     graph = builder.compile(
@@ -115,5 +131,5 @@ def build_graph(checkpointer=None):
         interrupt_before=["human_review"]
     )
     
-    logger.info("Themis Day 5 graph compiled with Human Review Gate and KG Writer")
+    logger.info("Themis Day 5 graph compiled with Human Review Gate, KG Writer, and Critic Agent")
     return graph

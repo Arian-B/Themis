@@ -13,6 +13,7 @@ from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from pydantic import ValidationError
 
 from graph.state import ThemisState
@@ -126,7 +127,13 @@ def analyze_risk(state: ThemisState) -> dict[str, Any]:
         
         if not data:
             continue # empty dict = no risk
-
+        
+        # Normalize response to ensure correct schema format
+        data = _normalize_risk_response(data)
+        
+        if not data:
+            continue
+        
         # Add clause_id and validate against schema
         data["clause_id"] = clause_id
         try:
@@ -147,17 +154,79 @@ def analyze_risk(state: ThemisState) -> dict[str, Any]:
         **({"errors": errors} if errors else {}),
     }
 
-from utils.llm_provider import get_complex_reasoning_llm
+from utils.llm_provider import get_complex_reasoning_llm, ChatOllama
+from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama as _ChatOllama
 
-def _build_llm() -> ChatOpenAI:
-    return get_complex_reasoning_llm(temperature=0)
+def _build_llm():
+    """Build LLM with Ollama as primary (Groq is consistently rate-limited)."""
+    provider = os.getenv("COMPLEX_TIER_PROVIDER", "ollama").strip().lower()
+    
+    if provider == "groq":
+        api_key = os.getenv("GROQ_API_KEY", "")
+        base_url = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
+        model = "openai/gpt-oss-120b"
+        if api_key:
+            return ChatOpenAI(
+                api_key=api_key,
+                base_url=base_url,
+                model=model,
+                temperature=0,
+            )
+    
+    # Primary: Ollama (local, no rate limits)
+    ollama_host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+    model = os.getenv("OLLAMA_CLASSIFY_MODEL", "llama3.1:8b")
+    logger.info(f"Using Ollama for risk analysis: {model} at {ollama_host}")
+    return _ChatOllama(
+        base_url=ollama_host,
+        model=model,
+        temperature=0,
+    )
 
-def _invoke_llm(llm: ChatOpenAI, messages: list, attempt: int) -> str:
+
+def _normalize_risk_response(data: dict) -> dict:
+    """Normalize LLM response to ensure correct RiskFlag schema format.
+    Expects already-parsed dict from JSON."""
+    if not data:
+        return {}
+    
+    # Ensure reasoning is a string, not a list
+    if "reasoning" in data and isinstance(data["reasoning"], list):
+        data["reasoning"] = " ".join(str(x) for x in data["reasoning"])
+    
+    # Ensure concern is a string
+    if "concern" in data and isinstance(data["concern"], list):
+        data["concern"] = " ".join(str(x) for x in data["concern"])
+    
+    # Ensure retrieved_source_ids is a list of strings
+    if "retrieved_source_ids" in data and isinstance(data["retrieved_source_ids"], list):
+        data["retrieved_source_ids"] = [str(x) for x in data["retrieved_source_ids"]]
+    
+    return data
+
+
+def _invoke_llm(llm, messages: list, attempt: int) -> str:
     try:
         response = llm.invoke(messages)
         return response.content if hasattr(response, "content") else str(response)
     except Exception as exc:
-        logger.warning("LLM invocation error on attempt %d: %s", attempt, exc)
+        error_msg = str(exc)
+        logger.warning("LLM invocation error on attempt %d: %s", attempt, error_msg)
+        
+        # Check for rate limit error and try Ollama fallback
+        if "rate limit" in error_msg.lower() or "429" in error_msg:
+            logger.warning("Rate limit detected, falling back to Ollama")
+            ollama_llm = _ChatOllama(
+                base_url=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+                model=os.getenv("OLLAMA_CLASSIFY_MODEL", "llama3.1:8b"),
+                temperature=0,
+            )
+            try:
+                response = ollama_llm.invoke(messages)
+                return response.content if hasattr(response, "content") else str(response)
+            except Exception as exc2:
+                logger.error("Ollama fallback also failed: %s", exc2)
         return ""
 
 def _parse_json(text: str) -> tuple[dict | None, str]:

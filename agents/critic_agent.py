@@ -6,7 +6,7 @@ import sys
 import json
 import logging
 from pathlib import Path
-import psycopg
+import psycopg2
 
 ROOT = Path(__file__).parent.parent
 if str(ROOT) not in sys.path:
@@ -47,7 +47,7 @@ def run_critic():
 
     llm = get_complex_reasoning_llm(temperature=0.0)
 
-    with psycopg.connect(db_url, application_name="themis-critic") as conn:
+    with psycopg2.connect(db_url, application_name="themis-critic") as conn:
         with conn.cursor() as cur:
             # Fetch all flag overrides not yet in critic_lessons
             cur.execute("""

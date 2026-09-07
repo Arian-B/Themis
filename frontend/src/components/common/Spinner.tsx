@@ -14,7 +14,7 @@ export function Spinner({ size = 'md', className }: SpinnerProps) {
 
   return (
     <svg
-      className={clsx('animate-spin text-violet-500', sizes[size], className)}
+      className={clsx('animate-spin text-blue-500', sizes[size], className)}
       viewBox="0 0 24 24"
       aria-hidden="true"
     >

@@ -5,9 +5,10 @@ interface CardProps {
   children: ReactNode
   className?: string
   padding?: 'none' | 'sm' | 'md' | 'lg'
+  elevated?: boolean
 }
 
-export function Card({ children, className, padding = 'md' }: CardProps) {
+export function Card({ children, className, padding = 'md', elevated = false }: CardProps) {
   const paddings = {
     none: '',
     sm: 'p-4',
@@ -18,7 +19,8 @@ export function Card({ children, className, padding = 'md' }: CardProps) {
   return (
     <div
       className={clsx(
-        'bg-slate-800/50 border border-slate-700 rounded-xl backdrop-blur-sm',
+        'bg-slate-900/60 border border-slate-800 rounded-2xl backdrop-blur-md transition-shadow duration-300',
+        elevated && 'shadow-lg hover:shadow-xl',
         paddings[padding],
         className
       )}
@@ -35,7 +37,7 @@ interface CardHeaderProps {
 
 export function CardHeader({ children, className }: CardHeaderProps) {
   return (
-    <div className={clsx('mb-4', className)}>
+    <div className={clsx('mb-5', className)}>
       {children}
     </div>
   )
@@ -48,7 +50,7 @@ interface CardTitleProps {
 
 export function CardTitle({ children, className }: CardTitleProps) {
   return (
-    <h3 className={clsx('text-lg font-semibold text-white', className)}>
+    <h3 className={clsx('text-lg font-semibold text-slate-50', className)}>
       {children}
     </h3>
   )
@@ -61,7 +63,7 @@ interface CardDescriptionProps {
 
 export function CardDescription({ children, className }: CardDescriptionProps) {
   return (
-    <p className={clsx('text-sm text-slate-400 mt-1', className)}>
+    <p className={clsx('text-sm text-slate-400 mt-1.5', className)}>
       {children}
     </p>
   )

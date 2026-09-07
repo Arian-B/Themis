@@ -1,4 +1,5 @@
 import { Fragment, ReactNode } from 'react'
+import { motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { clsx } from 'clsx'
 import { createPortal } from 'react-dom'
@@ -33,16 +34,28 @@ export function Modal({
   }
 
   const content = (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 overflow-y-auto"
+    >
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+        aria-hidden="true"
+      />
       <div className="flex min-h-full items-center justify-center p-4">
-        <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-          onClick={onClose}
-          aria-hidden="true"
-        />
-        <div
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           className={clsx(
-            'relative w-full bg-slate-900 border border-slate-700 rounded-xl shadow-xl',
+            'relative w-full bg-slate-900/95 border border-slate-800 rounded-2xl shadow-xl backdrop-blur-lg',
             sizes[size]
           )}
           role="dialog"
@@ -51,15 +64,15 @@ export function Modal({
           aria-describedby={description ? 'modal-description' : undefined}
         >
           {(title || showCloseButton) && (
-            <div className="flex items-start justify-between p-4 border-b border-slate-700">
+            <div className="flex items-start justify-between p-5 border-b border-slate-800">
               <div>
                 {title && (
-                  <h2 id="modal-title" className="text-lg font-semibold text-white">
+                  <h2 id="modal-title" className="text-lg font-semibold text-slate-50">
                     {title}
                   </h2>
                 )}
                 {description && (
-                  <p id="modal-description" className="mt-1 text-sm text-slate-400">
+                  <p id="modal-description" className="mt-1.5 text-sm text-slate-400">
                     {description}
                   </p>
                 )}
@@ -67,7 +80,7 @@ export function Modal({
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors"
                   aria-label="Close modal"
                 >
                   <X className="h-5 w-5" />
@@ -75,10 +88,10 @@ export function Modal({
               )}
             </div>
           )}
-          <div className="p-4">{children}</div>
-        </div>
+          <div className="p-5">{children}</div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   )
 
   if (typeof window === 'undefined') return null
