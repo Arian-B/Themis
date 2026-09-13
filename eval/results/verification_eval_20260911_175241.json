@@ -1,0 +1,291 @@
+{
+  "timestamp": "2026-09-11T17:52:41.931319",
+  "total_claims": 30,
+  "metrics": {
+    "accuracy": 0.9667,
+    "precision": 0.96,
+    "recall": 1.0,
+    "f1": 0.9796,
+    "avg_cosine_correct": 0.6205,
+    "avg_cosine_incorrect": 0,
+    "cosine_correlation_diff": 0.6205
+  },
+  "confusion_matrix": {
+    "tp": 24,
+    "fp": 1,
+    "tn": 5,
+    "fn": 0
+  },
+  "claims": [
+    {
+      "claim_id": "2cc49526-f138-4d48-9865-733564c34bf5",
+      "claim_text": "The clause provides for automatic renewal of the agreement for ten-year periods.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "c1bea824-8128-4521-8006-a6af7d3ae455",
+      "claim_text": "The clause does not grant the customer any right to terminate the agreement.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "a332f087-c4ce-4fec-be37-265de9277966",
+      "claim_text": "The renewal periods continue indefinitely unless the clause is otherwise amended.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "04906785-953a-45cf-bae2-c630d85a8a7c",
+      "claim_text": "The clause allows the provider to change pricing and terms at any time without notice.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "7f17b66b-f24f-4b61-9ad2-11fa8ee8838d",
+      "claim_text": "The clause waives the customer's right to bring a class action.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "2e86b0d7-b352-4e73-8aa9-1ff53f07c554",
+      "claim_text": "The clause waives the customer's right to a jury trial.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "ee8ba691-6012-4a45-916d-cf45d7edbc2b",
+      "claim_text": "The clause does not specify a liability cap.",
+      "ground_truth": false,
+      "predicted_grounded": false,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "none"
+    },
+    {
+      "claim_id": "97233ce9-a2af-49d7-8e2d-bf3a0a6b73dc",
+      "claim_text": "The clause provides for automatic renewal of the agreement for successive ten-year terms.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "3d8decb2-4ff7-4d0a-ab58-f147b7683ee7",
+      "claim_text": "The clause does not grant the customer any right to terminate the agreement.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "38b7fe3f-46b3-436d-8bcf-7489d8add10e",
+      "claim_text": "The clause requires no notice from either party prior to each renewal.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "56d73e1b-b888-41e1-9840-00b13886e45e",
+      "claim_text": "The provider may modify pricing and other terms at any time without prior notice.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "cfdb1a91-6f7d-49a6-b276-fb32f338cdac",
+      "claim_text": "The customer waives the right to bring class actions.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "9c0a5bd9-9ef5-42ce-aaab-28cf2e5cedba",
+      "claim_text": "The customer waives the right to a jury trial.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "b1d2a094-3247-48b5-8b1f-ff705445758a",
+      "claim_text": "The clause does not specify a liability cap.",
+      "ground_truth": false,
+      "predicted_grounded": false,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "none"
+    },
+    {
+      "claim_id": "42bfead8-9330-4f84-94c4-a7882c3a7eeb",
+      "claim_text": "The clause provides for automatic renewal of ten-year terms.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "c4a6a8cc-b2fd-4dd5-8cd5-ac7ceea8615b",
+      "claim_text": "The clause allows the renewal to continue indefinitely.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "9db718a5-7695-43aa-8e41-c56877114980",
+      "claim_text": "The clause does not give the customer any right to terminate the agreement.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "fdf3527a-7d63-4f3b-adb6-aea06332201c",
+      "claim_text": "The clause does not require the customer to give notice to avoid renewal.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "d65f0f49-1ba2-43d8-a35c-b50fdd3cdaed",
+      "claim_text": "The clause allows the Provider to change price and terms without notice.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "875ac59d-411e-4261-863f-728c0caece1e",
+      "claim_text": "The clause requires the Customer to waive class-action rights.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "0c82589f-0225-41f6-b7bd-c5b993307497",
+      "claim_text": "The clause requires the Customer to waive jury trial rights.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "6d13c6f6-ca2c-4f74-950d-83f5340eb7be",
+      "claim_text": "The clause includes a liability cap but does not specify an amount.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "edb26daf-c005-4150-919f-8a44183929ab",
+      "claim_text": "The agreement provides for automatic renewal of the term.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "2d755f46-69cd-4fcc-ac55-61607bdcb9cf",
+      "claim_text": "The clause imposes unlimited liability on the receiving party.",
+      "ground_truth": false,
+      "predicted_grounded": false,
+      "correct": true,
+      "cosine_score": 0.61357796,
+      "grounding_source": "none"
+    },
+    {
+      "claim_id": "78a54cf5-51a6-4ccb-982c-bfc99dd616f7",
+      "claim_text": "The license grants perpetual rights to use the software.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "979b2a52-342f-4a2e-a499-23bfbb7e52de",
+      "claim_text": "The license prohibits the licensee from sublicensing the software.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "84787711-6c5e-456c-a1b6-100568992af8",
+      "claim_text": "The licensee may reverse engineer the software for any purpose.",
+      "ground_truth": false,
+      "predicted_grounded": false,
+      "correct": true,
+      "cosine_score": 0.6172463,
+      "grounding_source": "none"
+    },
+    {
+      "claim_id": "636834fd-ede0-4c6f-8572-e21ad9a33a93",
+      "claim_text": "The license grants source code access to the licensee.",
+      "ground_truth": false,
+      "predicted_grounded": true,
+      "correct": false,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "d1b4be22-6bc4-4b01-ab1b-9d20b98a8c9c",
+      "claim_text": "The agreement automatically renews for successive terms.",
+      "ground_truth": true,
+      "predicted_grounded": true,
+      "correct": true,
+      "cosine_score": null,
+      "grounding_source": "contract_text"
+    },
+    {
+      "claim_id": "5b952bca-30dc-4567-b8c5-b2f098152b0e",
+      "claim_text": "The customer may terminate the agreement at any time without cause.",
+      "ground_truth": false,
+      "predicted_grounded": false,
+      "correct": true,
+      "cosine_score": 0.63071674,
+      "grounding_source": "none"
+    }
+  ]
+}

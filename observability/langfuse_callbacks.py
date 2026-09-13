@@ -74,6 +74,7 @@ def get_langfuse_handler(
 
     Args:
         trace_id:    The session_id from ThemisState — groups all nodes in one analysis.
+                     Must be a valid 32-char hex string (UUID hyphens will be stripped).
         user_id:     The user who uploaded the contract (for per-user dashboard filtering).
         tenant_id:   The tenant organisation (for multi-tenant dashboard segmentation).
         node_name:   The LangGraph node name (e.g. "risk_analysis_agent").
@@ -81,12 +82,13 @@ def get_langfuse_handler(
         jurisdiction: Detected jurisdiction code (e.g. "us_generic", "uk").
 
     Returns:
-        A configured langfuse.callback.CallbackHandler instance.
+        A configured langfuse.langchain.CallbackHandler instance.
 
     Raises:
         RuntimeError: If LANGFUSE_PUBLIC_KEY or LANGFUSE_SECRET_KEY are not set.
     """
-    from langfuse.callback import CallbackHandler  # type: ignore[import]
+    from langfuse.langchain import CallbackHandler  # type: ignore[import]
+    from langfuse.types import TraceContext  # type: ignore[import]
 
     _require_langfuse_env()
 
@@ -101,16 +103,28 @@ def get_langfuse_handler(
         "jurisdiction": jurisdiction,
     }
 
+    # Langfuse v4 requires trace_id as 32-char hex (no hyphens). Strip hyphens from UUIDs.
+    trace_id_clean = trace_id.replace("-", "")
+    if len(trace_id_clean) != 32:
+        # If not a UUID, hash it to get a valid 32-char trace_id
+        import hashlib
+        trace_id_clean = hashlib.sha256(trace_id.encode()).hexdigest()[:32]
+
+    trace_context = TraceContext(
+        trace_id=trace_id_clean,
+        observation_id=None,
+    )
+
     handler = CallbackHandler(
+        trace_context=trace_context,
         # Credentials and host are picked up from env vars automatically
         # (LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, LANGFUSE_HOST)
-        trace_id=trace_id,
-        session_id=trace_id,    # session_id = trace_id: one session per analysis
-        user_id=user_id,
-        trace_name="contract-analysis",     # Descriptive, not "trace-1"
-        tags=tags,
-        metadata=metadata,
     )
+
+    # Add tags and metadata via the handler's attributes
+    handler.trace_tags = tags
+    handler.trace_metadata = metadata
+    handler.trace_user_id = user_id
 
     return handler
 

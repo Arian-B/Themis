@@ -1,0 +1,1 @@
+{"_invocation_id": "f33fcbfc-55d7-4433-b4f4-40b26895ba86", "linked": {"0": {"name": "model.themis_dbt.critic_lesson_summary", "type": "model"}, "1": {"name": "model.themis_dbt.flags_by_risk_level", "type": "model"}, "2": {"name": "model.themis_dbt.human_override_rate", "type": "model"}}}

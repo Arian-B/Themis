@@ -1,0 +1,600 @@
+[0m00:02:22.554536 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002144A3BE780>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000214467D2540>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000214467D3950>]}
+
+
+============================== 00:02:22.562051 | 8de40faf-c7a3-469f-8861-bfbf69e15796 ==============================
+[0m00:02:22.562051 [info ] [MainThread]: Running with dbt=1.12.0
+[0m00:02:22.563051 [debug] [MainThread]: running dbt with arguments {'maximum_seed_size_mib': '1', 'no_print': 'None', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'version_check': 'True', 'target_path': 'None', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': '..\\profiles', 'use_colors': 'True', 'hints_enabled': 'True', 'invocation_command': 'dbt debug --project-dir . --profiles-dir ..\\profiles', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'log_path': 'logs'}
+[0m00:02:22.610713 [info ] [MainThread]: dbt version: 1.12.0
+[0m00:02:22.611710 [info ] [MainThread]: python version: 3.12.10
+[0m00:02:22.611710 [info ] [MainThread]: python path: C:\Python312\python.exe
+[0m00:02:22.612711 [info ] [MainThread]: os info: Windows-11-10.0.26200-SP0
+[0m00:02:22.619711 [error] [MainThread]: [[31mERROR[0m]: Encountered an error:
+Parsing Error
+  Env var required but not provided: 'SUPABASE_HOST'
+[0m00:02:22.621713 [debug] [MainThread]: Command `dbt debug` failed at 00:02:22.620711 after 0.26 seconds
+[0m00:02:22.621713 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021448807080>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002144A5794F0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002144A708CE0>]}
+[0m00:02:22.622711 [debug] [MainThread]: Flushing usage events
+[0m00:02:23.996432 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m00:03:32.286444 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000016084F5E8D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000160833E5460>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000160FFECD7F0>]}
+
+
+============================== 00:03:32.291448 | eeaeab80-3fbc-4106-998a-2a168e83bb48 ==============================
+[0m00:03:32.291448 [info ] [MainThread]: Running with dbt=1.12.0
+[0m00:03:32.291448 [debug] [MainThread]: running dbt with arguments {'maximum_seed_size_mib': '1', 'no_print': 'None', 'version_check': 'True', 'target_path': 'None', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'write_json': 'True', 'empty': 'None', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': '..\\profiles', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'use_colors': 'True', 'use_experimental_parser': 'False', 'invocation_command': 'dbt debug --project-dir . --profiles-dir ..\\profiles', 'log_path': 'logs'}
+[0m00:03:32.317011 [info ] [MainThread]: dbt version: 1.12.0
+[0m00:03:32.318014 [info ] [MainThread]: python version: 3.12.10
+[0m00:03:32.318014 [info ] [MainThread]: python path: C:\Python312\python.exe
+[0m00:03:32.318014 [info ] [MainThread]: os info: Windows-11-10.0.26200-SP0
+[0m00:03:32.538288 [info ] [MainThread]: Using profiles dir at ..\profiles
+[0m00:03:32.539291 [info ] [MainThread]: Using profiles.yml file at ..\profiles\profiles.yml
+[0m00:03:32.539291 [info ] [MainThread]: Using dbt_project.yml file at .\dbt_project.yml
+[0m00:03:32.541285 [info ] [MainThread]: adapter type: postgres
+[0m00:03:32.541285 [info ] [MainThread]: adapter version: 1.11.0
+[0m00:03:32.676634 [info ] [MainThread]: Configuration:
+[0m00:03:32.676634 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m00:03:32.677630 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m00:03:32.677630 [info ] [MainThread]: Required dependencies:
+[0m00:03:32.678632 [debug] [MainThread]: Executing "git --help"
+[0m00:03:32.736298 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Reset current HEAD to the specified state\n   switch     Switch branches\n   tag        Create, list, delete or verify tags\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m00:03:32.736298 [debug] [MainThread]: STDERR: "b''"
+[0m00:03:32.737296 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m00:03:32.737296 [info ] [MainThread]: Connection:
+[0m00:03:32.738299 [info ] [MainThread]:   host: db.lkasrioibhrcnmcavxxc.supabase.co
+[0m00:03:32.738299 [info ] [MainThread]:   port: 5432
+[0m00:03:32.739296 [info ] [MainThread]:   user: postgres.lkasrioibhrcnmcavxxc
+[0m00:03:32.739296 [info ] [MainThread]:   database: postgres
+[0m00:03:32.739296 [info ] [MainThread]:   schema: public
+[0m00:03:32.740297 [info ] [MainThread]:   connect_timeout: 10
+[0m00:03:32.740297 [info ] [MainThread]:   role: None
+[0m00:03:32.740297 [info ] [MainThread]:   search_path: None
+[0m00:03:32.740297 [info ] [MainThread]:   keepalives_idle: 0
+[0m00:03:32.741297 [info ] [MainThread]:   sslmode: None
+[0m00:03:32.741297 [info ] [MainThread]:   sslcert: None
+[0m00:03:32.741297 [info ] [MainThread]:   sslkey: None
+[0m00:03:32.742297 [info ] [MainThread]:   sslrootcert: None
+[0m00:03:32.742297 [info ] [MainThread]:   application_name: dbt
+[0m00:03:32.742297 [info ] [MainThread]:   autocommit: False
+[0m00:03:32.743297 [info ] [MainThread]:   retries: 3
+[0m00:03:32.743297 [info ] [MainThread]: Registered adapter: postgres=1.11.0
+[0m00:03:33.155046 [debug] [MainThread]: Acquiring new postgres connection 'debug'
+[0m00:03:35.648550 [debug] [MainThread]: Using postgres connection "debug"
+[0m00:03:35.648550 [debug] [MainThread]: On debug: select 1 as id
+[0m00:03:35.649555 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m00:03:35.675131 [debug] [MainThread]: Postgres adapter: Got a retryable error when attempting to open a postgres connection.
+3 attempts remaining. Retrying in 0 seconds.
+Error:
+could not translate host name "db.lkasrioibhrcnmcavxxc.supabase.co" to address: Name or service not known
+
+[0m00:03:35.676128 [debug] [MainThread]: Postgres adapter: Got a retryable error when attempting to open a postgres connection.
+2 attempts remaining. Retrying in 1 seconds.
+Error:
+could not translate host name "db.lkasrioibhrcnmcavxxc.supabase.co" to address: Name or service not known
+
+[0m00:03:36.677399 [debug] [MainThread]: Postgres adapter: Got a retryable error when attempting to open a postgres connection.
+1 attempts remaining. Retrying in 4 seconds.
+Error:
+could not translate host name "db.lkasrioibhrcnmcavxxc.supabase.co" to address: Name or service not known
+
+[0m00:03:40.681354 [debug] [MainThread]: Postgres adapter: Error running SQL: select 1 as id
+[0m00:03:40.681354 [debug] [MainThread]: Postgres adapter: Rolling back transaction.
+[0m00:03:40.682355 [debug] [MainThread]: On debug: No close available on handle
+[0m00:03:40.682355 [info ] [MainThread]:   Connection test: [[31mERROR[0m]
+
+[0m00:03:40.682355 [info ] [MainThread]: [31m1 check failed:[0m
+[0m00:03:40.683355 [info ] [MainThread]: dbt was unable to connect to the specified database.
+The database returned the following error:
+
+  >Database Error
+  could not translate host name "db.lkasrioibhrcnmcavxxc.supabase.co" to address: Name or service not known
+  
+
+Check your database credentials and try again. For more information, visit:
+https://docs.getdbt.com/docs/configure-your-profile
+
+
+[0m00:03:40.684362 [debug] [MainThread]: Command `dbt debug` failed at 00:03:40.684362 after 8.58 seconds
+[0m00:03:40.684362 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m00:03:40.685361 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000016084F5E8D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000016084F84170>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000160836283E0>]}
+[0m00:03:40.685361 [debug] [MainThread]: Flushing usage events
+[0m00:03:42.092966 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m00:04:21.842547 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002E656B38710>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002E656B395B0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002E656B3B3E0>]}
+
+
+============================== 00:04:21.847542 | d05991d4-3c53-4447-bc9a-3e017b03f2aa ==============================
+[0m00:04:21.847542 [info ] [MainThread]: Running with dbt=1.12.0
+[0m00:04:21.847542 [debug] [MainThread]: running dbt with arguments {'maximum_seed_size_mib': '1', 'no_print': 'None', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'version_check': 'True', 'printer_width': '80', 'write_json': 'True', 'empty': 'None', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': '..\\profiles', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'invocation_command': 'dbt debug --project-dir . --profiles-dir ..\\profiles', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': 'logs'}
+[0m00:04:21.872983 [info ] [MainThread]: dbt version: 1.12.0
+[0m00:04:21.873981 [info ] [MainThread]: python version: 3.12.10
+[0m00:04:21.873981 [info ] [MainThread]: python path: C:\Python312\python.exe
+[0m00:04:21.873981 [info ] [MainThread]: os info: Windows-11-10.0.26200-SP0
+[0m00:04:21.943774 [info ] [MainThread]: Using profiles dir at ..\profiles
+[0m00:04:21.943774 [info ] [MainThread]: Using profiles.yml file at ..\profiles\profiles.yml
+[0m00:04:21.944778 [info ] [MainThread]: Using dbt_project.yml file at .\dbt_project.yml
+[0m00:04:21.945781 [info ] [MainThread]: adapter type: postgres
+[0m00:04:21.945781 [info ] [MainThread]: adapter version: 1.11.0
+[0m00:04:22.101340 [info ] [MainThread]: Configuration:
+[0m00:04:22.101340 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m00:04:22.102336 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m00:04:22.102336 [info ] [MainThread]: Required dependencies:
+[0m00:04:22.103339 [debug] [MainThread]: Executing "git --help"
+[0m00:04:22.158344 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Reset current HEAD to the specified state\n   switch     Switch branches\n   tag        Create, list, delete or verify tags\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m00:04:22.159342 [debug] [MainThread]: STDERR: "b''"
+[0m00:04:22.159342 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m00:04:22.160342 [info ] [MainThread]: Connection:
+[0m00:04:22.161343 [info ] [MainThread]:   host: aws-0-ap-northeast-2.pooler.supabase.com
+[0m00:04:22.161343 [info ] [MainThread]:   port: 5432
+[0m00:04:22.161343 [info ] [MainThread]:   user: postgres.lkasrioibhrcnmcavxxc
+[0m00:04:22.161343 [info ] [MainThread]:   database: postgres
+[0m00:04:22.162851 [info ] [MainThread]:   schema: public
+[0m00:04:22.162851 [info ] [MainThread]:   connect_timeout: 10
+[0m00:04:22.162851 [info ] [MainThread]:   role: None
+[0m00:04:22.162851 [info ] [MainThread]:   search_path: None
+[0m00:04:22.163858 [info ] [MainThread]:   keepalives_idle: 0
+[0m00:04:22.163858 [info ] [MainThread]:   sslmode: None
+[0m00:04:22.163858 [info ] [MainThread]:   sslcert: None
+[0m00:04:22.164860 [info ] [MainThread]:   sslkey: None
+[0m00:04:22.164860 [info ] [MainThread]:   sslrootcert: None
+[0m00:04:22.164860 [info ] [MainThread]:   application_name: dbt
+[0m00:04:22.165860 [info ] [MainThread]:   autocommit: False
+[0m00:04:22.165860 [info ] [MainThread]:   retries: 3
+[0m00:04:22.166860 [info ] [MainThread]: Registered adapter: postgres=1.11.0
+[0m00:04:22.490887 [debug] [MainThread]: Acquiring new postgres connection 'debug'
+[0m00:04:22.571483 [debug] [MainThread]: Using postgres connection "debug"
+[0m00:04:22.571483 [debug] [MainThread]: On debug: select 1 as id
+[0m00:04:22.571483 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m00:04:23.712976 [debug] [MainThread]: SQL status: SELECT 1 in 1.141 seconds
+[0m00:04:23.713978 [debug] [MainThread]: On debug: Close
+[0m00:04:23.714978 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m00:04:23.714978 [info ] [MainThread]: [32mAll checks passed![0m
+[0m00:04:23.716561 [debug] [MainThread]: Command `dbt debug` succeeded at 00:04:23.716561 after 2.05 seconds
+[0m00:04:23.716561 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m00:04:23.716561 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002E652A2C080>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002E652A2F680>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002E654867C20>]}
+[0m00:04:23.717567 [debug] [MainThread]: Flushing usage events
+[0m00:04:25.129822 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m00:04:44.293660 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002103F8ADA00>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021042624530>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000210425D7DA0>]}
+
+
+============================== 00:04:44.297661 | f33fcbfc-55d7-4433-b4f4-40b26895ba86 ==============================
+[0m00:04:44.297661 [info ] [MainThread]: Running with dbt=1.12.0
+[0m00:04:44.298662 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'maximum_seed_size_mib': '1', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'False', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': '..\\profiles', 'invocation_command': 'dbt run --project-dir . --profiles-dir ..\\profiles', 'hints_enabled': 'True', 'use_colors': 'True', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'log_path': 'logs'}
+[0m00:04:44.706829 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'f33fcbfc-55d7-4433-b4f4-40b26895ba86', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002103F9CEC30>]}
+[0m00:04:44.796083 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'f33fcbfc-55d7-4433-b4f4-40b26895ba86', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002104277BFE0>]}
+[0m00:04:44.798084 [info ] [MainThread]: Registered adapter: postgres=1.11.0
+[0m00:04:45.159900 [debug] [MainThread]: checksum: a6d990aa5fffdf6ede73f00c99f082e1f630c3090d943915a992b8be49b11c7c, vars: {}, profile: themis_dbt, target: dev, version: 1.12.0
+[0m00:04:45.160898 [info ] [MainThread]: Unable to do partial parsing because saved manifest not found. Starting full parse.
+[0m00:04:45.161897 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'partial_parser', 'label': 'f33fcbfc-55d7-4433-b4f4-40b26895ba86', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021044A9C4A0>]}
+[0m00:04:47.132026 [warn ] [MainThread]: [[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 2 unused configuration paths:
+- models.themis_dbt.marts
+- models.themis_dbt.staging
+[0m00:04:47.136539 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': 'f33fcbfc-55d7-4433-b4f4-40b26895ba86', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021044D1B200>]}
+[0m00:04:47.229258 [debug] [MainThread]: Wrote artifact WritableManifest to .\target\manifest.json
+[0m00:04:47.235069 [debug] [MainThread]: Wrote artifact SemanticManifest to .\target\semantic_manifest.json
+[0m00:04:47.294091 [debug] [MainThread]: Wrote artifact OsiDocument to .\target\osi_document.json
+[0m00:04:47.327497 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': 'f33fcbfc-55d7-4433-b4f4-40b26895ba86', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021044F8FC80>]}
+[0m00:04:47.328498 [info ] [MainThread]: Found 3 models, 477 macros
+[0m00:04:47.328498 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'f33fcbfc-55d7-4433-b4f4-40b26895ba86', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021044D3D8E0>]}
+[0m00:04:47.333800 [info ] [MainThread]: 
+[0m00:04:47.334953 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m00:04:47.334953 [info ] [MainThread]: 
+[0m00:04:47.337491 [debug] [MainThread]: Acquiring new postgres connection 'master'
+[0m00:04:47.342488 [debug] [ThreadPool]: Acquiring new postgres connection 'list_postgres'
+[0m00:04:47.459281 [debug] [ThreadPool]: Using postgres connection "list_postgres"
+[0m00:04:47.460280 [debug] [ThreadPool]: On list_postgres: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "connection_name": "list_postgres"} */
+
+    select distinct nspname from pg_namespace
+  
+[0m00:04:47.460280 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m00:04:48.513159 [debug] [ThreadPool]: SQL status: SELECT 12 in 1.053 seconds
+[0m00:04:48.515161 [debug] [ThreadPool]: On list_postgres: Close
+[0m00:04:48.517162 [debug] [ThreadPool]: Acquiring new postgres connection 'list_postgres_public'
+[0m00:04:48.521721 [debug] [ThreadPool]: Using postgres connection "list_postgres_public"
+[0m00:04:48.522721 [debug] [ThreadPool]: On list_postgres_public: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "connection_name": "list_postgres_public"} */
+select
+      'postgres' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'public'
+    union all
+    select
+      'postgres' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'public'
+    union all
+    select
+      'postgres' as database,
+      matviewname as name,
+      schemaname as schema,
+      'materialized_view' as type
+    from pg_matviews
+    where schemaname ilike 'public'
+    union all
+    select distinct
+     'postgres' as database,
+     proname as name,
+     ns.nspname as schema,
+     'function' as type
+    from pg_proc
+     join pg_namespace as ns on pronamespace = ns.oid
+    where ns.nspname ilike 'public'
+  
+[0m00:04:48.522721 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m00:04:49.468223 [debug] [ThreadPool]: SQL status: SELECT 8 in 0.945 seconds
+[0m00:04:49.469781 [debug] [ThreadPool]: On list_postgres_public: ROLLBACK
+[0m00:04:49.584852 [debug] [ThreadPool]: On list_postgres_public: Close
+[0m00:04:49.588850 [debug] [MainThread]: Using postgres connection "master"
+[0m00:04:49.589852 [debug] [MainThread]: On master: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "connection_name": "master"} */
+select distinct
+        dependent_namespace.nspname as dependent_schema,
+        dependent_class.relname as dependent_name,
+        referenced_namespace.nspname as referenced_schema,
+        referenced_class.relname as referenced_name
+
+    -- Query for views: views are entries in pg_class with an entry in pg_rewrite, but we avoid
+    -- a seq scan on pg_rewrite by leveraging the fact there is an "internal" row in pg_depend for
+    -- the view...
+    from pg_class as dependent_class
+    join pg_namespace as dependent_namespace on dependent_namespace.oid = dependent_class.relnamespace
+    join pg_depend as dependent_depend on dependent_depend.refobjid = dependent_class.oid
+        and dependent_depend.classid = 'pg_rewrite'::regclass
+        and dependent_depend.refclassid = 'pg_class'::regclass
+        and dependent_depend.deptype = 'i'
+
+    -- ... and via pg_depend (that has a row per column, hence the need for "distinct" above, and
+    -- making sure to exclude the internal row to avoid a view appearing to depend on itself)...
+    join pg_depend as joining_depend on joining_depend.objid = dependent_depend.objid
+        and joining_depend.classid = 'pg_rewrite'::regclass
+        and joining_depend.refclassid = 'pg_class'::regclass
+        and joining_depend.refobjid != dependent_depend.refobjid
+
+    -- ... we can find the tables they query from in pg_class, but excluding system tables. Note we
+    -- don't need need to exclude _dependent_ system tables, because they only query from other
+    -- system tables, and so are automatically excluded by excluding _referenced_ system tables
+    join pg_class as referenced_class on referenced_class.oid = joining_depend.refobjid
+    join pg_namespace as referenced_namespace on referenced_namespace.oid = referenced_class.relnamespace
+        and referenced_namespace.nspname != 'information_schema'
+        and referenced_namespace.nspname not like 'pg\_%'
+
+    order by
+        dependent_schema, dependent_name, referenced_schema, referenced_name;
+[0m00:04:49.589852 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m00:04:50.638384 [debug] [MainThread]: SQL status: SELECT 1 in 1.048 seconds
+[0m00:04:50.640384 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'f33fcbfc-55d7-4433-b4f4-40b26895ba86', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021044F8FDA0>]}
+[0m00:04:50.641383 [debug] [MainThread]: On master: ROLLBACK
+[0m00:04:50.767694 [debug] [MainThread]: On master: COMMIT
+[0m00:04:50.767694 [debug] [MainThread]: Using postgres connection "master"
+[0m00:04:50.768695 [debug] [MainThread]: On master: COMMIT
+[0m00:04:51.019281 [debug] [MainThread]: SQL status: COMMIT in 0.250 seconds
+[0m00:04:51.020281 [debug] [MainThread]: On master: Close
+[0m00:04:51.025867 [debug] [Thread-1 (]: Began running node model.themis_dbt.critic_lesson_summary
+[0m00:04:51.027872 [debug] [Thread-2 (]: Began running node model.themis_dbt.flags_by_risk_level
+[0m00:04:51.027872 [debug] [Thread-3 (]: Began running node model.themis_dbt.human_override_rate
+[0m00:04:51.028872 [info ] [Thread-1 (]: 1 of 3 START sql table model public.critic_lesson_summary ...................... [RUN]
+[0m00:04:51.028872 [info ] [Thread-2 (]: 2 of 3 START sql table model public.flags_by_risk_level ........................ [RUN]
+[0m00:04:51.029868 [info ] [Thread-3 (]: 3 of 3 START sql table model public.human_override_rate ........................ [RUN]
+[0m00:04:51.029868 [debug] [Thread-1 (]: Acquiring new postgres connection 'model.themis_dbt.critic_lesson_summary'
+[0m00:04:51.030869 [debug] [Thread-2 (]: Acquiring new postgres connection 'model.themis_dbt.flags_by_risk_level'
+[0m00:04:51.030869 [debug] [Thread-3 (]: Acquiring new postgres connection 'model.themis_dbt.human_override_rate'
+[0m00:04:51.031867 [debug] [Thread-1 (]: Began compiling node model.themis_dbt.critic_lesson_summary
+[0m00:04:51.031867 [debug] [Thread-2 (]: Began compiling node model.themis_dbt.flags_by_risk_level
+[0m00:04:51.032866 [debug] [Thread-3 (]: Began compiling node model.themis_dbt.human_override_rate
+[0m00:04:51.038866 [debug] [Thread-1 (]: Writing injected SQL for node "model.themis_dbt.critic_lesson_summary"
+[0m00:04:51.042868 [debug] [Thread-2 (]: Writing injected SQL for node "model.themis_dbt.flags_by_risk_level"
+[0m00:04:51.044866 [debug] [Thread-3 (]: Writing injected SQL for node "model.themis_dbt.human_override_rate"
+[0m00:04:51.047868 [debug] [Thread-1 (]: Began executing node model.themis_dbt.critic_lesson_summary
+[0m00:04:51.066866 [debug] [Thread-3 (]: Began executing node model.themis_dbt.human_override_rate
+[0m00:04:51.081652 [debug] [Thread-2 (]: Began executing node model.themis_dbt.flags_by_risk_level
+[0m00:04:51.093737 [debug] [Thread-3 (]: Writing runtime sql for node "model.themis_dbt.human_override_rate"
+[0m00:04:51.095738 [debug] [Thread-1 (]: Writing runtime sql for node "model.themis_dbt.critic_lesson_summary"
+[0m00:04:51.098736 [debug] [Thread-2 (]: Writing runtime sql for node "model.themis_dbt.flags_by_risk_level"
+[0m00:04:51.101743 [debug] [Thread-3 (]: Using postgres connection "model.themis_dbt.human_override_rate"
+[0m00:04:51.102743 [debug] [Thread-3 (]: On model.themis_dbt.human_override_rate: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "node_id": "model.themis_dbt.human_override_rate"} */
+
+  
+    
+
+  create  table "postgres"."public"."human_override_rate__dbt_tmp"
+  
+  
+    as
+  
+  (
+    
+
+with review_decisions as (
+  select
+    al.resource_id as flag_id,
+    al.details->>'concern' as concern,
+    al.details->>'human_override' as decision,
+    al.details->>'original_risk' as risk_level,
+    al.details->>'contract_id' as contract_id,
+    al.created_at
+  from audit_log al
+  where al.action in ('flag.accepted', 'flag.overridden', 'flag.rejected')
+    and al.details ? 'human_override'
+),
+
+contract_stats as (
+  select
+    contract_id,
+    count(*) as total_reviews,
+    count(case when decision = 'accepted' then 1 end) as accepted_count,
+    count(case when decision = 'rejected' then 1 end) as rejected_count,
+    count(case when decision = 'overridden' then 1 end) as overridden_count,
+    min(created_at) as first_review,
+    max(created_at) as last_review
+  from review_decisions
+  group by contract_id
+),
+
+overall_stats as (
+  select
+    count(*) as total_reviews,
+    count(case when decision = 'accepted' then 1 end) as total_accepted,
+    count(case when decision = 'rejected' then 1 end) as total_rejected,
+    count(case when decision = 'overridden' then 1 end) as total_overridden,
+    count(distinct contract_id) as contracts_reviewed,
+    min(created_at) as first_review,
+    max(created_at) as last_review
+  from review_decisions
+)
+
+select
+  'overall' as scope,
+  null as contract_id,
+  total_reviews,
+  total_accepted,
+  total_rejected,
+  total_overridden,
+  contracts_reviewed,
+  round(100.0 * total_accepted / nullif(total_reviews, 0), 2) as acceptance_rate_pct,
+  round(100.0 * total_rejected / nullif(total_reviews, 0), 2) as rejection_rate_pct,
+  round(100.0 * total_overridden / nullif(total_reviews, 0), 2) as override_rate_pct,
+  first_review,
+  last_review
+from overall_stats
+
+union all
+
+select
+  'per_contract' as scope,
+  contract_id,
+  total_reviews,
+  accepted_count,
+  rejected_count,
+  overridden_count,
+  null as contracts_reviewed,
+  round(100.0 * accepted_count / nullif(total_reviews, 0), 2) as acceptance_rate_pct,
+  round(100.0 * rejected_count / nullif(total_reviews, 0), 2) as rejection_rate_pct,
+  round(100.0 * overridden_count / nullif(total_reviews, 0), 2) as override_rate_pct,
+  first_review,
+  last_review
+from contract_stats
+
+order by scope, contract_id
+  );
+  
+[0m00:04:51.103747 [debug] [Thread-3 (]: Opening a new connection, currently in state init
+[0m00:04:51.103747 [debug] [Thread-1 (]: Using postgres connection "model.themis_dbt.critic_lesson_summary"
+[0m00:04:51.104745 [debug] [Thread-2 (]: Using postgres connection "model.themis_dbt.flags_by_risk_level"
+[0m00:04:51.105744 [debug] [Thread-1 (]: On model.themis_dbt.critic_lesson_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "node_id": "model.themis_dbt.critic_lesson_summary"} */
+
+  
+    
+
+  create  table "postgres"."public"."critic_lesson_summary__dbt_tmp"
+  
+  
+    as
+  
+  (
+    
+
+with lessons as (
+  select
+    cl.flag_id,
+    cl.human_decision,
+    cl.was_flag_useful,
+    cl.lesson,
+    cl.created_at
+  from critic_lessons cl
+),
+
+lesson_stats as (
+  select
+    count(*) as total_lessons,
+    count(case when was_flag_useful then 1 end) as useful_count,
+    count(case when not was_flag_useful then 1 end) as not_useful_count,
+    min(created_at) as first_lesson,
+    max(created_at) as latest_lesson
+  from lessons
+),
+
+decision_breakdown as (
+  select
+    human_decision,
+    count(*) as count,
+    round(100.0 * count(*) / sum(count(*)) over (), 2) as pct
+  from lessons
+  group by human_decision
+)
+
+select
+  'summary' as scope,
+  total_lessons,
+  useful_count,
+  not_useful_count,
+  round(100.0 * useful_count / nullif(total_lessons, 0), 2) as usefulness_rate_pct,
+  first_lesson,
+  latest_lesson,
+  null as human_decision
+from lesson_stats
+
+union all
+
+select
+  'by_decision' as scope,
+  count as total_lessons,
+  0 as useful_count,
+  0 as not_useful_count,
+  pct as usefulness_rate_pct,
+  null as first_lesson,
+  null as latest_lesson,
+  human_decision
+from decision_breakdown
+
+order by scope, human_decision
+  );
+  
+[0m00:04:51.105744 [debug] [Thread-2 (]: On model.themis_dbt.flags_by_risk_level: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "node_id": "model.themis_dbt.flags_by_risk_level"} */
+
+  
+    
+
+  create  table "postgres"."public"."flags_by_risk_level__dbt_tmp"
+  
+  
+    as
+  
+  (
+    
+
+with audit_flags as (
+  select
+    al.resource_id as flag_id,
+    al.action,
+    al.details->>'concern' as concern,
+    al.details->>'human_override' as decision,
+    al.details->>'original_risk' as risk_level,
+    al.created_at
+  from audit_log al
+  where al.action in ('flag.accepted', 'flag.overridden', 'flag.rejected')
+    and al.details ? 'concern'
+),
+
+flag_aggregation as (
+  select
+    risk_level,
+    count(*) as total_flags,
+    count(case when decision = 'accepted' then 1 end) as accepted_count,
+    count(case when decision = 'rejected' then 1 end) as rejected_count,
+    count(case when decision = 'overridden' then 1 end) as overridden_count,
+    min(created_at) as first_seen,
+    max(created_at) as last_seen
+  from audit_flags
+  group by risk_level
+)
+
+select
+  risk_level,
+  total_flags,
+  accepted_count,
+  rejected_count,
+  overridden_count,
+  first_seen,
+  last_seen,
+  round(100.0 * accepted_count / nullif(total_flags, 0), 2) as acceptance_rate_pct,
+  round(100.0 * rejected_count / nullif(total_flags, 0), 2) as rejection_rate_pct,
+  round(100.0 * overridden_count / nullif(total_flags, 0), 2) as override_rate_pct
+from flag_aggregation
+order by
+  case risk_level
+    when 'critical' then 1
+    when 'high' then 2
+    when 'medium' then 3
+    when 'low' then 4
+    else 5
+  end
+  );
+  
+[0m00:04:51.106743 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m00:04:51.106743 [debug] [Thread-2 (]: Opening a new connection, currently in state init
+[0m00:04:52.076436 [debug] [Thread-1 (]: SQL status: SELECT 3 in 0.970 seconds
+[0m00:04:52.076960 [debug] [Thread-3 (]: SQL status: SELECT 6 in 0.973 seconds
+[0m00:04:52.086557 [debug] [Thread-1 (]: Using postgres connection "model.themis_dbt.critic_lesson_summary"
+[0m00:04:52.089627 [debug] [Thread-3 (]: Using postgres connection "model.themis_dbt.human_override_rate"
+[0m00:04:52.089627 [debug] [Thread-1 (]: On model.themis_dbt.critic_lesson_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "node_id": "model.themis_dbt.critic_lesson_summary"} */
+alter table "postgres"."public"."critic_lesson_summary__dbt_tmp" rename to "critic_lesson_summary"
+[0m00:04:52.090636 [debug] [Thread-3 (]: On model.themis_dbt.human_override_rate: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "node_id": "model.themis_dbt.human_override_rate"} */
+alter table "postgres"."public"."human_override_rate__dbt_tmp" rename to "human_override_rate"
+[0m00:04:52.141655 [debug] [Thread-2 (]: SQL status: SELECT 2 in 1.035 seconds
+[0m00:04:52.144162 [debug] [Thread-2 (]: Using postgres connection "model.themis_dbt.flags_by_risk_level"
+[0m00:04:52.145174 [debug] [Thread-2 (]: On model.themis_dbt.flags_by_risk_level: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "node_id": "model.themis_dbt.flags_by_risk_level"} */
+alter table "postgres"."public"."flags_by_risk_level__dbt_tmp" rename to "flags_by_risk_level"
+[0m00:04:52.207750 [debug] [Thread-1 (]: SQL status: ALTER TABLE in 0.117 seconds
+[0m00:04:52.208748 [debug] [Thread-3 (]: SQL status: ALTER TABLE in 0.117 seconds
+[0m00:04:52.224441 [debug] [Thread-1 (]: On model.themis_dbt.critic_lesson_summary: COMMIT
+[0m00:04:52.226446 [debug] [Thread-3 (]: On model.themis_dbt.human_override_rate: COMMIT
+[0m00:04:52.226446 [debug] [Thread-1 (]: Using postgres connection "model.themis_dbt.critic_lesson_summary"
+[0m00:04:52.227447 [debug] [Thread-3 (]: Using postgres connection "model.themis_dbt.human_override_rate"
+[0m00:04:52.227447 [debug] [Thread-1 (]: On model.themis_dbt.critic_lesson_summary: COMMIT
+[0m00:04:52.228447 [debug] [Thread-3 (]: On model.themis_dbt.human_override_rate: COMMIT
+[0m00:04:52.273920 [debug] [Thread-2 (]: SQL status: ALTER TABLE in 0.128 seconds
+[0m00:04:52.275922 [debug] [Thread-2 (]: On model.themis_dbt.flags_by_risk_level: COMMIT
+[0m00:04:52.275922 [debug] [Thread-2 (]: Using postgres connection "model.themis_dbt.flags_by_risk_level"
+[0m00:04:52.276922 [debug] [Thread-2 (]: On model.themis_dbt.flags_by_risk_level: COMMIT
+[0m00:04:52.341122 [debug] [Thread-1 (]: SQL status: COMMIT in 0.113 seconds
+[0m00:04:52.341122 [debug] [Thread-3 (]: SQL status: COMMIT in 0.113 seconds
+[0m00:04:52.348638 [debug] [Thread-1 (]: Applying DROP to: "postgres"."public"."critic_lesson_summary__dbt_backup"
+[0m00:04:52.350638 [debug] [Thread-3 (]: Applying DROP to: "postgres"."public"."human_override_rate__dbt_backup"
+[0m00:04:52.358227 [debug] [Thread-1 (]: Using postgres connection "model.themis_dbt.critic_lesson_summary"
+[0m00:04:52.360236 [debug] [Thread-3 (]: Using postgres connection "model.themis_dbt.human_override_rate"
+[0m00:04:52.361236 [debug] [Thread-1 (]: On model.themis_dbt.critic_lesson_summary: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "node_id": "model.themis_dbt.critic_lesson_summary"} */
+drop table if exists "postgres"."public"."critic_lesson_summary__dbt_backup" cascade
+[0m00:04:52.361236 [debug] [Thread-3 (]: On model.themis_dbt.human_override_rate: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "node_id": "model.themis_dbt.human_override_rate"} */
+drop table if exists "postgres"."public"."human_override_rate__dbt_backup" cascade
+[0m00:04:52.402240 [debug] [Thread-2 (]: SQL status: COMMIT in 0.125 seconds
+[0m00:04:52.404241 [debug] [Thread-2 (]: Applying DROP to: "postgres"."public"."flags_by_risk_level__dbt_backup"
+[0m00:04:52.405242 [debug] [Thread-2 (]: Using postgres connection "model.themis_dbt.flags_by_risk_level"
+[0m00:04:52.406243 [debug] [Thread-2 (]: On model.themis_dbt.flags_by_risk_level: /* {"app": "dbt", "dbt_version": "1.12.0", "profile_name": "themis_dbt", "target_name": "dev", "node_id": "model.themis_dbt.flags_by_risk_level"} */
+drop table if exists "postgres"."public"."flags_by_risk_level__dbt_backup" cascade
+[0m00:04:52.471470 [debug] [Thread-1 (]: SQL status: DROP TABLE in 0.110 seconds
+[0m00:04:52.474469 [debug] [Thread-1 (]: On model.themis_dbt.critic_lesson_summary: Close
+[0m00:04:52.476470 [debug] [Thread-3 (]: SQL status: DROP TABLE in 0.114 seconds
+[0m00:04:52.478471 [debug] [Thread-3 (]: On model.themis_dbt.human_override_rate: Close
+[0m00:04:52.480470 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'f33fcbfc-55d7-4433-b4f4-40b26895ba86', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002103F9CDF10>]}
+[0m00:04:52.481470 [debug] [Thread-3 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'f33fcbfc-55d7-4433-b4f4-40b26895ba86', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002104207C140>]}
+[0m00:04:52.482469 [info ] [Thread-1 (]: 1 of 3 OK created sql table model public.critic_lesson_summary ................. [[32mSELECT 3[0m in 1.44s]
+[0m00:04:52.484472 [debug] [Thread-1 (]: Finished running node model.themis_dbt.critic_lesson_summary
+[0m00:04:52.483471 [info ] [Thread-3 (]: 3 of 3 OK created sql table model public.human_override_rate ................... [[32mSELECT 6[0m in 1.45s]
+[0m00:04:52.485472 [debug] [Thread-3 (]: Finished running node model.themis_dbt.human_override_rate
+[0m00:04:52.534139 [debug] [Thread-2 (]: SQL status: DROP TABLE in 0.128 seconds
+[0m00:04:52.536141 [debug] [Thread-2 (]: On model.themis_dbt.flags_by_risk_level: Close
+[0m00:04:52.536141 [debug] [Thread-2 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'f33fcbfc-55d7-4433-b4f4-40b26895ba86', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021044FC1400>]}
+[0m00:04:52.537142 [info ] [Thread-2 (]: 2 of 3 OK created sql table model public.flags_by_risk_level ................... [[32mSELECT 2[0m in 1.51s]
+[0m00:04:52.538141 [debug] [Thread-2 (]: Finished running node model.themis_dbt.flags_by_risk_level
+[0m00:04:52.539142 [debug] [MainThread]: On master: COMMIT
+[0m00:04:52.540142 [debug] [MainThread]: Using postgres connection "master"
+[0m00:04:52.540142 [debug] [MainThread]: On master: COMMIT
+[0m00:04:52.540142 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m00:04:53.441247 [debug] [MainThread]: SQL status: COMMIT in 0.900 seconds
+[0m00:04:53.442243 [debug] [MainThread]: On master: Close
+[0m00:04:53.443245 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m00:04:53.443245 [debug] [MainThread]: Connection 'list_postgres' was properly closed.
+[0m00:04:53.444242 [debug] [MainThread]: Connection 'list_postgres_public' was properly closed.
+[0m00:04:53.444598 [debug] [MainThread]: Connection 'model.themis_dbt.critic_lesson_summary' was properly closed.
+[0m00:04:53.445104 [debug] [MainThread]: Connection 'model.themis_dbt.flags_by_risk_level' was properly closed.
+[0m00:04:53.445645 [debug] [MainThread]: Connection 'model.themis_dbt.human_override_rate' was properly closed.
+[0m00:04:53.446167 [info ] [MainThread]: 
+[0m00:04:53.446690 [info ] [MainThread]: Finished running 3 table models in 0 hours 0 minutes and 6.11 seconds (6.11s).
+[0m00:04:53.447747 [debug] [MainThread]: Command end result
+[0m00:04:53.488668 [debug] [MainThread]: Wrote artifact WritableManifest to .\target\manifest.json
+[0m00:04:53.494596 [debug] [MainThread]: Wrote artifact SemanticManifest to .\target\semantic_manifest.json
+[0m00:04:53.499151 [debug] [MainThread]: Wrote artifact OsiDocument to .\target\osi_document.json
+[0m00:04:53.507666 [debug] [MainThread]: Wrote artifact RunExecutionResult to .\target\run_results.json
+[0m00:04:53.508664 [info ] [MainThread]: 
+[0m00:04:53.508664 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m00:04:53.509663 [info ] [MainThread]: 
+[0m00:04:53.509663 [info ] [MainThread]: Done. PASS=3 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=3
+[0m00:04:53.511664 [debug] [MainThread]: Command `dbt run` succeeded at 00:04:53.511664 after 9.40 seconds
+[0m00:04:53.511664 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002104432BC20>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000210420BCC80>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021042779940>]}
+[0m00:04:53.512663 [debug] [MainThread]: Flushing usage events
+[0m00:04:54.893651 [debug] [MainThread]: An error was encountered while trying to flush usage events

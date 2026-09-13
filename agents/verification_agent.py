@@ -439,7 +439,8 @@ def _verify_claim(
                 content=f"CLAIM: {claim_str}\n\nSOURCE TEXT:\n{content}"
             ),
         ]
-        raw_ver = _invoke_llm(llm, ver_msgs, attempt=1)
+        callbacks = _get_callbacks(state)
+        raw_ver = _invoke_llm(llm, ver_msgs, attempt=1, callbacks=callbacks)
         ver_data, ver_err = _parse_json(raw_ver)
 
         if ver_data and isinstance(ver_data, dict):
@@ -483,15 +484,27 @@ def _verify_claim(
 # ---------------------------------------------------------------------------
 
 from utils.llm_provider import get_complex_reasoning_llm
+from observability.langfuse_callbacks import get_langfuse_handler_for_node
 
 
 def _build_llm() -> ChatOpenAI:
     return get_complex_reasoning_llm(temperature=0)
 
 
-def _invoke_llm(llm: ChatOpenAI, messages: list, attempt: int) -> str:
+def _get_callbacks(state: ThemisState) -> list:
     try:
-        response = llm.invoke(messages)
+        handler = get_langfuse_handler_for_node(
+            state=dict(state),
+            node_name="verification_agent",
+        )
+        return [handler] if handler is not None else []
+    except Exception:
+        return []
+
+
+def _invoke_llm(llm: ChatOpenAI, messages: list, attempt: int, callbacks: list = None) -> str:
+    try:
+        response = llm.invoke(messages, config={"callbacks": callbacks} if callbacks else None)
         return response.content if hasattr(response, "content") else str(response)
     except Exception as exc:
         logger.warning("LLM invocation error on attempt %d: %s", attempt, exc)

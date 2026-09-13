@@ -1,0 +1,92 @@
+Thread: 32901e38-df2b-4934-8ae7-eee9756b2c6f
+claim_id=2cc49526-f138-4d48-9865-733564c34bf5 grounded=True score=None
+  claim: The clause provides for automatic renewal of the agreement for ten‑year periods.
+  source: contract_text
+
+claim_id=c1bea824-8128-4521-8006-a6af7d3ae455 grounded=True score=None
+  claim: The clause does not grant the customer any right to terminate the agreement.
+  source: contract_text
+
+claim_id=a332f087-c4ce-4fec-be37-265de9277966 grounded=True score=None
+  claim: The renewal periods continue indefinitely unless the clause is otherwise amended.
+  source: contract_text
+
+claim_id=04906785-953a-45cf-bae2-c630d85a8a7c grounded=True score=None
+  claim: The clause allows the provider to change pricing and terms at any time without notice.
+  source: contract_text
+
+claim_id=7f17b66b-f24f-4b61-9ad2-11fa8ee8838d grounded=True score=None
+  claim: The clause waives the customer's right to bring a class action.
+  source: contract_text
+
+claim_id=2e86b0d7-b352-4e73-8aa9-1ff53f07c554 grounded=True score=None
+  claim: The clause waives the customer's right to a jury trial.
+  source: contract_text
+
+claim_id=ee8ba691-6012-4a45-916d-cf45d7edbc2b grounded=False score=None
+  claim: The clause does not specify a liability cap.
+  source: none
+
+Thread: 713fa380-c9ed-4caa-a922-b162afafb3e4
+claim_id=97233ce9-a2af-49d7-8e2d-bf3a0a6b73dc grounded=True score=None
+  claim: The clause provides for automatic renewal of the agreement for successive ten‑year terms.
+  source: contract_text
+
+claim_id=3d8decb2-4ff7-4d0a-ab58-f147b7683ee7 grounded=True score=None
+  claim: The clause does not grant the customer any right to terminate the agreement.
+  source: contract_text
+
+claim_id=38b7fe3f-46b3-436d-8bcf-7489d8add10e grounded=True score=None
+  claim: The clause requires no notice from either party prior to each renewal.
+  source: contract_text
+
+claim_id=56d73e1b-b888-41e1-9840-00b13886e45e grounded=True score=None
+  claim: The provider may modify pricing and other terms at any time without prior notice.
+  source: contract_text
+
+claim_id=cfdb1a91-6f7d-49a6-b276-fb32f338cdac grounded=True score=None
+  claim: The customer waives the right to bring class actions.
+  source: contract_text
+
+claim_id=9c0a5bd9-9ef5-42ce-aaab-28cf2e5cedba grounded=True score=None
+  claim: The customer waives the right to a jury trial.
+  source: contract_text
+
+claim_id=b1d2a094-3247-48b5-8b1f-ff705445758a grounded=False score=None
+  claim: The clause does not specify a liability cap.
+  source: none
+
+Thread: 0a7f2360-95d6-4c87-a486-fbeaeeeefd76
+claim_id=42bfead8-9330-4f84-94c4-a7882c3a7eeb grounded=True score=None
+  claim: The clause provides for automatic renewal of ten-year terms.
+  source: contract_text
+
+claim_id=c4a6a8cc-b2fd-4dd5-8cd5-ac7ceea8615b grounded=True score=None
+  claim: The clause allows the renewal to continue indefinitely.
+  source: contract_text
+
+claim_id=9db718a5-7695-43aa-8e41-c56877114980 grounded=True score=None
+  claim: The clause does not give the customer any right to terminate the agreement.
+  source: contract_text
+
+claim_id=fdf3527a-7d63-4f3b-adb6-aea06332201c grounded=True score=None
+  claim: The clause does not require the customer to give notice to avoid renewal.
+  source: contract_text
+
+claim_id=d65f0f49-1ba2-43d8-a35c-b50fdd3cdaed grounded=True score=None
+  claim: The clause allows the Provider to change price and terms without notice.
+  source: contract_text
+
+claim_id=875ac59d-411e-4261-863f-728c0caece1e grounded=True score=None
+  claim: The clause requires the Customer to waive class‑action rights.
+  source: contract_text
+
+claim_id=0c82589f-0225-41f6-b7bd-c5b993307497 grounded=True score=None
+  claim: The clause requires the Customer to waive jury trial rights.
+  source: contract_text
+
+claim_id=6d13c6f6-ca2c-4f74-950d-83f5340eb7be grounded=True score=None
+  claim: The clause includes a liability cap but does not specify an amount.
+  source: contract_text
+
+

@@ -61,7 +61,7 @@ def critic_agent_node(state: ThemisState) -> dict:
     """
     logger.info("critic_agent: Running critic feedback analysis...")
     try:
-        run_critic()
+        run_critic(state)
         logger.info("critic_agent: Critic feedback analysis completed.")
     except Exception as e:
         logger.error(f"critic_agent: Failed with error: {e}")

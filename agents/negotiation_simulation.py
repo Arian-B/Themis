@@ -17,6 +17,7 @@ from langchain_openai import ChatOpenAI
 from graph.state import ThemisState
 from schemas.negotiation import NegotiationTurn, NegotiationTranscript
 from utils.llm_provider import get_complex_reasoning_llm
+from observability.langfuse_callbacks import get_langfuse_handler_for_node
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,6 @@ class NegotiationState(TypedDict):
     concern: str
     turns: Annotated[list[dict[str, Any]], operator.add]
     outcome: Optional[Literal["agreement_reached", "impasse", "max_turns_reached"]]
-
 
 _PROPOSER_PROMPT = """\
 You are the "proposer" (our client's counsel). 
@@ -68,14 +68,28 @@ Respond ONLY with a JSON object exactly matching this schema:
 }}
 """
 
+from utils.llm_provider import get_complex_reasoning_llm
+from observability.langfuse_callbacks import get_langfuse_handler_for_node
 
-def _invoke_and_parse(system_prompt: str, human_prompt: str) -> dict:
+
+def _get_callbacks(state: NegotiationState) -> list:
+    try:
+        handler = get_langfuse_handler_for_node(
+            state=dict(state),
+            node_name="negotiation_simulation",
+        )
+        return [handler] if handler is not None else []
+    except Exception:
+        return []
+
+
+def _invoke_and_parse(system_prompt: str, human_prompt: str, callbacks: list = None) -> dict:
     llm = get_complex_reasoning_llm(temperature=0.2)
     messages = [
         SystemMessage(content=system_prompt),
         HumanMessage(content=human_prompt),
     ]
-    resp = llm.invoke(messages)
+    resp = llm.invoke(messages, config={"callbacks": callbacks} if callbacks else None)
     text = resp.content if hasattr(resp, "content") else str(resp)
     
     clean = text.strip()
@@ -102,7 +116,8 @@ def proposer_node(state: NegotiationState) -> dict:
         history=history_str or "No history yet. Propose the first redline."
     )
     
-    res = _invoke_and_parse(prompt, "Your turn.")
+    callbacks = _get_callbacks(state)
+    res = _invoke_and_parse(prompt, "Your turn.", callbacks=callbacks)
     
     if res.get("is_agreement") and turns:
         return {"outcome": "agreement_reached"}
@@ -128,7 +143,8 @@ def counterparty_node(state: NegotiationState) -> dict:
         history=history_str
     )
     
-    res = _invoke_and_parse(prompt, "Your turn.")
+    callbacks = _get_callbacks(state)
+    res = _invoke_and_parse(prompt, "Your turn.", callbacks=callbacks)
     
     if res.get("is_agreement"):
         return {"outcome": "agreement_reached"}
@@ -227,21 +243,8 @@ def run_negotiation_node(state: ThemisState) -> dict:
     }
     
     # Run subgraph
-    res = negotiation_graph.invoke(sub_state)
+    result = negotiation_graph.invoke(sub_state)
     
-    outcome = res.get("outcome")
-    turns = res.get("turns", [])
-    
-    if not outcome:
-        if len(turns) >= 4:
-            outcome = "max_turns_reached"
-        else:
-            outcome = "impasse"
-            
-    transcript = {
-        "clause_id": clause_id,
-        "turns": turns,
-        "outcome": outcome
+    return {
+        "negotiation_result": result,
     }
-    
-    return {"negotiation_transcript": transcript}

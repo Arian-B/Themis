@@ -18,9 +18,21 @@ from langchain_openai import ChatOpenAI
 from graph.state import ThemisState
 from schemas.knowledge_graph import GraphEntity, GraphRelationship, KGWriteResult
 from utils.llm_provider import get_complex_reasoning_llm
-from utils.mcp_client import call_mcp_tool
+from observability.langfuse_callbacks import get_langfuse_handler_for_node
 
 logger = logging.getLogger(__name__)
+
+
+def _get_callbacks(state: ThemisState) -> list:
+    try:
+        handler = get_langfuse_handler_for_node(
+            state=dict(state),
+            node_name="knowledge_graph_writer",
+        )
+        return [handler] if handler is not None else []
+    except Exception:
+        return []
+
 
 class GraphEntityExtracted(BaseModel):
     entity_id: str
@@ -77,10 +89,11 @@ def extract_and_write_kg(state: ThemisState) -> dict[str, Any]:
         HumanMessage(content=prompt_text)
     ]
 
+    callbacks = _get_callbacks(state)
     errors: list[dict[str, Any]] = list(state.get("errors") or [])
     
     try:
-        draft = llm.invoke(messages)
+        draft = llm.invoke(messages, config={"callbacks": callbacks} if callbacks else None)
     except Exception as e:
         logger.error(f"knowledge_graph_writer: LLM extraction failed: {e}")
         errors.append({

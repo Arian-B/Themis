@@ -1,0 +1,92 @@
+{
+  "timestamp": "2026-09-10T12:29:07.933341",
+  "dataset_size": 8,
+  "metrics": {
+    "faithfulness": NaN,
+    "answer_relevancy": NaN,
+    "context_precision": NaN,
+    "context_recall": NaN
+  },
+  "test_cases": [
+    {
+      "question": "The clause locks the customer into an indefinite series of ten-year renewals with no right to terminate",
+      "ground_truth": "Auto-renewal clause without termination right creates high risk of vendor lock-in and unexpected long-term commitments. Customer cannot exit without breach.",
+      "contexts": [
+        "1. TERM AND RENEWAL\nThis Agreement shall commence on the Effective Date and continue for an initial term of one (1) year.\nThereafter, this Agreement shall automatically renew for successive ten-year periods without notice.\nCustomer agrees that they may not terminate this agreement.",
+        "Auto-renewal clauses without termination rights are considered high-risk in SaaS contracts as they create vendor lock-in."
+      ],
+      "expected_risk_level": "high",
+      "expected_grounded": true
+    },
+    {
+      "question": "The clause gives the Provider unlimited power to change price and terms without notice",
+      "ground_truth": "Unilateral modification clause gives provider unilateral control over pricing and terms, creating high financial risk for customer with no recourse.",
+      "contexts": [
+        "Provider may modify the terms of this Agreement, including fees and service levels, at any time without prior notice to Customer.",
+        "Unilateral modification clauses without notice periods are consistently flagged as high-risk in SaaS agreements."
+      ],
+      "expected_risk_level": "high",
+      "expected_grounded": true
+    },
+    {
+      "question": "Customer has no ability to terminate the agreement, which could lock them into unfavorable terms indefinitely",
+      "ground_truth": "No termination right creates permanent vendor lock-in, preventing customer from escaping unfavorable terms or responding to market changes.",
+      "contexts": [
+        "Customer agrees that they may not terminate this agreement for any reason during the initial term or any renewal term.",
+        "Termination rights are fundamental to contract fairness; absence indicates high risk."
+      ],
+      "expected_risk_level": "high",
+      "expected_grounded": true
+    },
+    {
+      "question": "The clause allows the Provider to unilaterally modify the pricing without any cap on increases",
+      "ground_truth": "Uncapped price modification allows provider to increase fees arbitrarily, creating unbounded financial risk for customer.",
+      "contexts": [
+        "Provider reserves the right to modify fees at any time. Fee modifications shall be effective immediately upon posting to the Provider's website.",
+        "Pricing modification clauses without caps or notice periods are medium-to-high risk depending on context."
+      ],
+      "expected_risk_level": "medium",
+      "expected_grounded": true
+    },
+    {
+      "question": "The liability cap is set at fees paid in the preceding twelve months, which may be insufficient for data breach damages",
+      "ground_truth": "Twelve-month fee cap may be inadequate for catastrophic losses like data breaches that can exceed annual contract value significantly.",
+      "contexts": [
+        "Each party's total liability shall not exceed the fees paid by Customer in the twelve (12) months preceding the claim.",
+        "Liability caps below potential catastrophic loss exposure are considered medium risk."
+      ],
+      "expected_risk_level": "medium",
+      "expected_grounded": true
+    },
+    {
+      "question": "The clause contains a class action waiver and jury trial waiver, limiting customer's legal recourse",
+      "ground_truth": "Class action and jury trial waivers significantly limit customer's ability to seek collective legal redress for systemic issues.",
+      "contexts": [
+        "Customer waives any right to a jury trial and waives any right to participate in a class action lawsuit against Provider.",
+        "Dispute resolution clauses that waive class actions are increasingly scrutinized by courts and regulators."
+      ],
+      "expected_risk_level": "medium",
+      "expected_grounded": true
+    },
+    {
+      "question": "The confidentiality clause is mutual but allows Provider to disclose to affiliates without restriction",
+      "ground_truth": "Asymmetric confidentiality obligations favor provider by allowing broader disclosure to affiliates and third parties.",
+      "contexts": [
+        "Confidential Information may be disclosed by Provider to its affiliates, subsidiaries, and service providers without Customer's prior consent.",
+        "Asymmetric confidentiality clauses are common but should be flagged for customer awareness."
+      ],
+      "expected_risk_level": "low",
+      "expected_grounded": true
+    },
+    {
+      "question": "The governing law is Delaware without regard to conflict of laws principles",
+      "ground_truth": "Delaware governing law is standard for commercial contracts but may disadvantage non-US customers in dispute resolution.",
+      "contexts": [
+        "This Agreement shall be governed by the laws of the State of Delaware, without regard to its conflict of laws principles.",
+        "Delaware is a common choice for governing law in US commercial contracts due to its well-developed corporate law."
+      ],
+      "expected_risk_level": "low",
+      "expected_grounded": true
+    }
+  ]
+}

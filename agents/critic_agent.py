@@ -18,8 +18,21 @@ load_dotenv(ROOT / ".env")
 from langchain_core.messages import HumanMessage, SystemMessage
 from utils.llm_provider import get_complex_reasoning_llm
 from schemas.feedback import CriticFeedback
+from observability.langfuse_callbacks import get_langfuse_handler_for_node
 
 logger = logging.getLogger(__name__)
+
+
+def _get_callbacks(state: dict) -> list:
+    try:
+        handler = get_langfuse_handler_for_node(
+            state=dict(state),
+            node_name="critic_agent",
+        )
+        return [handler] if handler is not None else []
+    except Exception:
+        return []
+
 
 _CRITIC_PROMPT = """\
 You are an expert legal tech AI critic.
@@ -39,13 +52,16 @@ Respond ONLY with a JSON object exactly matching this schema:
 }}
 """
 
-def run_critic():
+def run_critic(state: dict | None = None):
+    if state is None:
+        state = {}
     db_url = os.environ.get("DATABASE_URL")
     if not db_url:
         logger.error("No DATABASE_URL set.")
         return
 
     llm = get_complex_reasoning_llm(temperature=0.0)
+    callbacks = _get_callbacks(state)
 
     with psycopg2.connect(db_url, application_name="themis-critic") as conn:
         with conn.cursor() as cur:
@@ -68,7 +84,7 @@ def run_critic():
                 
                 prompt = _CRITIC_PROMPT.format(concern=concern, decision=decision)
                 try:
-                    resp = llm.invoke([HumanMessage(content=prompt)])
+                    resp = llm.invoke([HumanMessage(content=prompt)], config={"callbacks": callbacks} if callbacks else None)
                 except Exception as e:
                     logger.error(f"LLM failure: {e}")
                     continue
